@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NeoBMI</string>
+    <string name="bmi_weight">weight</string>
+    <string name="app_title">BMI calculator</string>
+    <string name="bmi_height">height</string>
+    <string name="bmi">Calculate</string>
+</resources>

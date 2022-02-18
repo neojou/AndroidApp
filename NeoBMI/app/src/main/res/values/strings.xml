@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NeoBMI</string>
+    <string name="bmi_weight">體重</string>
+    <string name="app_title">BMI 計算機</string>
+    <string name="bmi_height">身高</string>
+    <string name="bmi">計算BMI</string>
+    <string name="bmi_result">BMI=</string>
+</resources>

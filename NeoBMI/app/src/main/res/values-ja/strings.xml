@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ネオBMI</string>
+    <string name="bmi_weight">体重</string>
+    <string name="app_title">BMI計算機</string>
+    <string name="bmi_height">身長</string>
+    <string name="bmi">BMIチェック</string>
+</resources>
