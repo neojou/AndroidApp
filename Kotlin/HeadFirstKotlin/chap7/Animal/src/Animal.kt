@@ -43,13 +43,8 @@ class Husky(name: String, weight_param: Float) : Dog(name, weight_param)
 }
 
 fun do_catch_ball(pet: Animal) {
-    if (pet is Dog) {
-        val dog = pet as Dog
-        dog.catch_ball()
-    } else {
-        val name = pet.name
-        println("$name cannot do catch ball")
-    }
+    (pet as? Dog)?.catch_ball() ?:
+        println("${pet.name} cannot do catch ball")
 }
 
 fun main() {
