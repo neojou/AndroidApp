@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">JLPT trainer</string>
+    <string name="question_title">問題</string>
+    <string name="question_content">都心（　　　　）、このあたりはまだ緑が多く残っていて鳥の声も聞こえる。</string>
+    <string name="choice_title">選擇</string>
+    <string name="button_answer">回答</string>
+    <string name="answer1">とあって</string>
+    <string name="answer2">とはいえ</string>
+    <string name="answer3">ときたら</string>
+    <string name="answer4">とあれば</string>
+</resources>
