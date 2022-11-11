@@ -20,7 +20,6 @@
         android:id="@+id/question_content"
         android:layout_width="352dp"
         android:layout_height="132dp"
-        android:text="@string/question_content"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,26 +49,24 @@
             android:id="@+id/answer1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/answer1"
             android:textAlignment="viewStart" />
 
         <RadioButton
             android:id="@+id/answer2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/answer2" />
+            />
 
         <RadioButton
             android:id="@+id/answer3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/answer3" />
+            />
 
         <RadioButton
             android:id="@+id/answer4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/answer4" />
+            android:layout_height="wrap_content" />
     </RadioGroup>
 
     <Button
