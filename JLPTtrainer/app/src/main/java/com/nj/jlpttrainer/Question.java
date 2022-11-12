@@ -8,6 +8,7 @@ public class Question {
 
     public Question() {
         answers = new String[5];
+        choice = 0; // User didn't select yet
     }
 
     /*
@@ -18,9 +19,7 @@ public class Question {
         answers[3] = "ときたら";
         answers[4] = "とあれば";
         right_choice = 2;
-        choice = 0;
     }
-     */
 
     public void generate_question() {
         question = "子供では（　　　　　）、自分のことぐらい自分でしなさい";
@@ -29,8 +28,18 @@ public class Question {
         answers[3] = "あろうが";
         answers[4] = "なくて";
         right_choice = 1;
-        choice = 0;
     }
+*/
+
+    public void generate_question() {
+        question = "家庭は子供が大部分の時間を過ごす場所である。（　　　　　）、私は家庭でのしつけが一番重要だとかんがえるのです。";
+        answers[1] = "それなりに";
+        answers[2] = "それゆえに";
+        answers[3] = "それこそが";
+        answers[4] = "それにひきかえ";
+        right_choice = 2;
+    }
+
 
 };
 
