@@ -69,21 +69,54 @@
             android:layout_height="wrap_content" />
     </RadioGroup>
 
-    <Button
-        android:id="@+id/button_answer"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_answer"
- />
+        android:orientation="horizontal"
+        tools:context=".MainActivity"
+       >
 
+        <Button
+            android:id="@+id/button_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_answer"
+            app:layout_constraintEnd_toStartOf="@+id/button_next"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_next"
+            app:layout_constraintEnd_toStartOf="@+id/button_setting"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_answer"
+            />
+
+        <Button
+            android:id="@+id/button_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_setting"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_next"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.helper.widget.Flow
-        android:id="@+id/flow"
+        android:id="@+id/screen_flow"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:constraint_referenced_ids="question_title, question_content,
-             choice_title, answers,button_answer"
+             choice_title, answers,button_layout"
         app:flow_horizontalAlign="center"
         app:flow_verticalAlign="bottom"
         app:flow_verticalStyle="spread"

@@ -39,7 +39,7 @@ public class Question {
         answers[4] = "それにひきかえ";
         right_choice = 2;
     }
-*/
+
 
     public void generate_question() {
         question = "彼は貧しさ（　　　　）十分な教育が受けられなかった。";
@@ -49,6 +49,19 @@ public class Question {
         answers[4] = "なしに";
         right_choice = 1;
     }
+
+     */
+
+    public void generate_question() {
+        question = "さんざん考えた末、私（　　　　）作った企画がこれです。";
+        answers[1] = "だけに";
+        answers[2] = "ゆえに";
+        answers[3] = "ように";
+        answers[4] = "なりに";
+        right_choice = 4;
+    }
+
+
 };
 
 

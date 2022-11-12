@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">JLPT trainer</string>
+    <string name="app_name">JLPT Grammar Trainer</string>
     <string name="question_title">問題</string>
     <string name="choice_title">選擇</string>
     <string name="button_answer">回答</string>
+    <string name="button_next">下一題</string>
+    <string name="button_setting">題目設定</string>
 </resources>

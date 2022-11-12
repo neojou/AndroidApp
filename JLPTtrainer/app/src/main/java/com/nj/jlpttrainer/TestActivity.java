@@ -17,7 +17,10 @@ public class TestActivity extends MainActivity
     Button choice2;
     Button choice3;
     Button choice4;
-    Button buttonAnswer;
+    Button button_answer;
+    Button button_next;
+    Button button_setting;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +61,27 @@ public class TestActivity extends MainActivity
     }
 
     private void set_button_click_listener(Question q) {
-        buttonAnswer = (Button)findViewById(R.id.button_answer);
-        buttonAnswer.setOnClickListener(this);
+        button_answer = (Button)findViewById(R.id.button_answer);
+        button_answer.setOnClickListener(this);
+        button_next = (Button)findViewById(R.id.button_next);
+        button_next.setOnClickListener(this);
+        button_setting = (Button)findViewById(R.id.button_setting);
+        button_setting.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        choice_title.setText("Clicked");
+        switch (view.getId()) {
+            case R.id.button_answer:
+                choice_title.setText("Answer");
+                break;
+            case R.id.button_next:
+                choice_title.setText("Next");
+                break;
+            case R.id.button_setting:
+                choice_title.setText("Setting");
+                break;
+        }
     }
 }
 
