@@ -2,65 +2,79 @@ package com.nj.jlpttrainer;
 
 public class Question {
     String question;
-    String[] answers;
+    String[] choices;
     int right_choice;
-    int choice;
+    int answer;
 
     public Question() {
-        answers = new String[5];
-        choice = 0; // User didn't select yet
+        choices = new String[4];
+        answer = 0; // User didn't select yet
     }
 
     /*
     public void generate_question() {
         question = "都心（　　　　）、このあたりはまだ緑が多く残っていて鳥の声も聞こえる。";
-        answers[1] = "とあって";
-        answers[2] = "とはいえ";
-        answers[3] = "ときたら";
-        answers[4] = "とあれば";
+        choices[0] = "とあって";
+        choices[1] = "とはいえ";
+        choices[2] = "ときたら";
+        choices[3] = "とあれば";
         right_choice = 2;
+        answer=0;
     }
 
     public void generate_question() {
         question = "子供では（　　　　　）、自分のことぐらい自分でしなさい";
-        answers[1] = "あるまいし";
-        answers[2] = "あれ";
-        answers[3] = "あろうが";
-        answers[4] = "なくて";
+        choices[0] = "あるまいし";
+        choices[1] = "あれ";
+        choices[2] = "あろうが";
+        choices[3] = "なくて";
         right_choice = 1;
+        answer=0;
     }
 
 
     public void generate_question() {
         question = "家庭は子供が大部分の時間を過ごす場所である。（　　　　　）、私は家庭でのしつけが一番重要だとかんがえるのです。";
-        answers[1] = "それなりに";
-        answers[2] = "それゆえに";
-        answers[3] = "それこそが";
-        answers[4] = "それにひきかえ";
+        choices[0] = "それなりに";
+        choices[1] = "それゆえに";
+        choices[2] = "それこそが";
+        choices[3] = "それにひきかえ";
         right_choice = 2;
+        answer=0;
     }
 
 
     public void generate_question() {
         question = "彼は貧しさ（　　　　）十分な教育が受けられなかった。";
-        answers[1] = "ゆえに";
-        answers[2] = "なりに";
-        answers[3] = "ながから";
-        answers[4] = "なしに";
+        choices[0] = "ゆえに";
+        choices[1] = "なりに";
+        choices[2] = "ながから";
+        choices[3] = "なしに";
         right_choice = 1;
+        answer=0;
     }
 
-     */
+
 
     public void generate_question() {
         question = "さんざん考えた末、私（　　　　）作った企画がこれです。";
-        answers[1] = "だけに";
-        answers[2] = "ゆえに";
-        answers[3] = "ように";
-        answers[4] = "なりに";
+        choices[0] = "だけに";
+        choices[1] = "ゆえに";
+        choices[2] = "ように";
+        choices[3] = "なりに";
         right_choice = 4;
+        answer=0;
     }
-
+*/
+    public void generate_question() {
+        question = "国民の期待というプレッシャーの大きさは（　　　　　　　　）が、彼女はそれを見事に克服して、金メダルを獲得した。";
+        choices[0] = "想像にかたくない";
+        choices[1] = "想像できな";
+        choices[2] = "想像できることはできる";
+        choices[3] = "想像することはない";
+        right_choice = 1;
+        answer=0;
+    }
 
 };
 

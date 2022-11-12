@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/button_bg.xml" value="0.1465" />
+        <entry key="app/src/main/res/drawable/button_unselected.xml" value="0.1455" />
+        <entry key="app/src/main/res/drawable/radio_button_state.xml" value="0.1455" />
+        <entry key="app/src/main/res/drawable/rb_selector.xml" value="0.1465" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.26272735595703123" />
       </map>
     </option>

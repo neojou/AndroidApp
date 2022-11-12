@@ -34,7 +34,7 @@
         />
 
     <RadioGroup
-        android:id="@+id/answers"
+        android:id="@+id/choices"
         android:layout_width="345dp"
         android:layout_height="191dp"
         android:layout_marginStart="10dp"
@@ -46,25 +46,25 @@
         app:layout_constraintTop_toBottomOf="@+id/choice_title">
 
         <RadioButton
-            android:id="@+id/answer1"
+            android:id="@+id/choice1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="viewStart" />
 
         <RadioButton
-            android:id="@+id/answer2"
+            android:id="@+id/choice2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
 
         <RadioButton
-            android:id="@+id/answer3"
+            android:id="@+id/choice3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
 
         <RadioButton
-            android:id="@+id/answer4"
+            android:id="@+id/choice4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RadioGroup>
@@ -116,7 +116,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:constraint_referenced_ids="question_title, question_content,
-             choice_title, answers,button_layout"
+             choice_title, choices,button_layout"
         app:flow_horizontalAlign="center"
         app:flow_verticalAlign="bottom"
         app:flow_verticalStyle="spread"
