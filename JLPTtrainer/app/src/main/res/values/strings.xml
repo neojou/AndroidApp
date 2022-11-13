@@ -3,6 +3,7 @@
     <string name="question_title">問題</string>
     <string name="choice_title">選擇</string>
     <string name="button_answer">答案</string>
+    <string name="button_start">開始</string>
     <string name="button_next">下一題</string>
     <string name="button_setting">題目設定</string>
     <string name="correct">正確</string>

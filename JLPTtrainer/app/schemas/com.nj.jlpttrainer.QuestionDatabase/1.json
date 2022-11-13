@@ -1,0 +1,79 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f3fea1183bef916116d3f51d4b3f5480",
+    "entities": [
+      {
+        "tableName": "JLPTquestions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `question` TEXT, `choice1` TEXT, `choice2` TEXT, `choice3` TEXT, `choice4` TEXT, `right_choice` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "question",
+            "columnName": "question",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "choice1",
+            "columnName": "choice1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "choice2",
+            "columnName": "choice2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "choice3",
+            "columnName": "choice3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "choice4",
+            "columnName": "choice4",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "right_choice",
+            "columnName": "right_choice",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_JLPTquestions__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_JLPTquestions__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f3fea1183bef916116d3f51d4b3f5480')"
+    ]
+  }
+}
