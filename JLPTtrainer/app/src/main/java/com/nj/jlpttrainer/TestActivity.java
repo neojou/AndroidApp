@@ -2,6 +2,7 @@ package com.nj.jlpttrainer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,12 +15,15 @@ import android.widget.RadioButton;
 import java.lang.Integer;
 import java.util.List;
 
+import com.nj.jlpttrainer.databinding.ActivityMainBinding;
+
 
 public class TestActivity extends AppCompatActivity
     implements View.OnClickListener
 {
     private static final String TAG="JLPT_trainer:TestActivity";
-    QuestionDataModel q_dm;
+    private ActivityMainBinding binding;
+    private QuestionDataViewModel q_dvm;
 
     Question q = new Question();
     TextView question_title;
@@ -39,27 +43,41 @@ public class TestActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        //setViewItems();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        setViewItemsBinding();
 
-        setViewItems();
-
-        q_dm = new QuestionDataModel(getApplication());
+        q_dvm = new QuestionDataViewModel(getApplication());
+        binding.setQDvm(q_dvm);
 
         isStarted = false;
         isFinished = false;
         q_id = 1;
         button_next.setText(getString(R.string.button_start));
+        set_button_click_listener();
 
         /** setVisibility : View.VISIBLE, View.INVISIBLE, View.GONE */
         //question_title.setVisibility(View.GONE);
-        choice_title.setVisibility(View.GONE);
-        choice_rd.setVisibility(View.GONE);
+        //choice_title.setVisibility(View.GONE);
+        //choice_rd.setVisibility(View.GONE);
 
         /** Need some time to trigger the DB once */
-        int count = q_dm.getQuestionsTotalNumber();
-        question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(count));
+        //int count = q_dvm.getQuestionsTotalNumber();
+        //question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(count));
 
-        set_button_click_listener();
+        /** once q_dvm finished commands, isLoading is set to false,
+         *  and can start to click the buttons.
+         */
+
+        q_dvm.issueGetAllQuestions(new QuestionDataViewModel.onDataReadyCallback() {
+            @Override
+            public void onDataReady(List<Question> lq) {
+                Log.v(TAG, "onDataReady");
+                q_dvm.questions = lq;
+                q_dvm.isLoading.set(false);
+            }
+        });
     }
 
     private void setViewItems() {
@@ -74,6 +92,20 @@ public class TestActivity extends AppCompatActivity
         button_answer = (Button)findViewById(R.id.button_answer);
         button_next = (Button)findViewById(R.id.button_next);
         button_setting = (Button)findViewById(R.id.button_setting);
+    }
+
+    private void setViewItemsBinding() {
+        question_title = binding.questionTitle;
+        question_content = binding.questionContent;
+        choice_title = binding.choiceTitle;
+        choice_rd = binding.choices;
+        choice_rb[0] = binding.choice1;
+        choice_rb[1] = binding.choice2;
+        choice_rb[2] = binding.choice3;
+        choice_rb[3] = binding.choice4;
+        button_answer = binding.buttonAnswer;
+        button_next = binding.buttonNext;
+        button_setting = binding.buttonSetting;
     }
 
     private void set_question_to_view(Question q) {
@@ -96,11 +128,8 @@ public class TestActivity extends AppCompatActivity
     }
 
     private void set_button_click_listener() {
-        button_answer = (Button)findViewById(R.id.button_answer);
-        button_answer.setOnClickListener(this);
-        button_next = (Button)findViewById(R.id.button_next);
         button_next.setOnClickListener(this);
-        button_setting = (Button)findViewById(R.id.button_setting);
+        button_answer.setOnClickListener(this);
         button_setting.setOnClickListener(this);
     }
 
@@ -195,6 +224,8 @@ public class TestActivity extends AppCompatActivity
      */
 
     private void next_question() {
+        Log.v(TAG, "next_question");
+
         if (isFinished == true)
             return;
 
@@ -204,11 +235,10 @@ public class TestActivity extends AppCompatActivity
             isFinished = false;
             q_id = 1;
 
-            db_size = q_dm.getQuestionsTotalNumber();
-            Log.d(TAG, "db size = " + Integer.toString(db_size));
-            question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(db_size));
-            List<Question> questions = q_dm.getAllQuestions();
-            Question.log_dump(questions);
+            int total_questions = q_dvm.total_questions;
+            Log.v(TAG, "next_questions() : total_questions = " + Integer.toString(total_questions));
+            Log.d(TAG, "total questions = " + Integer.toString(total_questions));
+            question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(total_questions));
             //q_rep.rearrange(questions);
 
             //if (db_size <= 0)
@@ -226,26 +256,29 @@ public class TestActivity extends AppCompatActivity
 
     private Question generate_question() {
         Log.v(TAG, "generate_question");
-        List<Question> questions = q_dm.getQuestionById(q_id);
-        if (questions == null || questions.isEmpty()) {
-            Log.e(TAG, "Access DB failed: lost data ID:" + Integer.toString(q_id));
+
+        List<Question> questions = q_dvm.questions;
+
+        if (questions == null || questions.isEmpty() ) {
+            Log.e(TAG, "CANNOT access Questions DB");
             q.generate_question();
         } else {
+            Log.v(TAG, "show all questions");
             Question.log_dump(questions);
-
-            Question q1 = (Question)questions.get(0);
-            if (q1 == null) {
-                Log.e(TAG, "generate_question list error");
-                q.generate_question();
-            } else {
-                q.copy(q1);
-                q_id++;
-            }
-            Log.d(TAG, "next q1: " + Integer.toString(q1.id) + " : " + q1.question);
         }
+
+        Question q1 = (Question)questions.get(0);
+        if (q1 == null) {
+            Log.e(TAG, "generate_question list error");
+            q.generate_question();
+        } else {
+            q.copy(q1);
+            q_id++;
+        }
+        Log.d(TAG, "next q1: " + Integer.toString(q1.id) + " : " + q1.question);
+
         set_question_to_view(q);
         Log.v(TAG, "generate_question finished");
-
         return q;
     }
 }

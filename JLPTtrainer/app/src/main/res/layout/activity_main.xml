@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="q_dvm"
+            type="com.nj.jlpttrainer.QuestionDataViewModel" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,6 +19,7 @@
 
     <TextView
         android:id="@+id/question_title"
+        android:visibility="@{q_dvm.isLoading ? View.INVISIBLE : View.VISIBLE}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/question_title"
@@ -27,6 +37,7 @@
 
     <TextView
         android:id="@+id/choice_title"
+        android:visibility="@{q_dvm.isLoading ? View.INVISIBLE : View.VISIBLE}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/choice_title"
@@ -35,6 +46,7 @@
 
     <RadioGroup
         android:id="@+id/choices"
+        android:visibility="@{q_dvm.isLoading ? View.INVISIBLE : View.VISIBLE}"
         android:layout_width="345dp"
         android:layout_height="191dp"
         android:layout_marginStart="10dp"
@@ -69,6 +81,16 @@
             android:layout_height="wrap_content" />
     </RadioGroup>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="@{q_dvm.isLoading ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
@@ -90,6 +112,7 @@
 
         <Button
             android:id="@+id/button_next"
+            android:enabled="@{q_dvm.isLoading ? false : true}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_next"
@@ -116,7 +139,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:constraint_referenced_ids="question_title, question_content,
-             choice_title, choices,button_layout"
+             choice_title, choices,progressBar, button_layout"
         app:flow_horizontalAlign="center"
         app:flow_verticalAlign="bottom"
         app:flow_verticalStyle="spread"
@@ -124,3 +147,5 @@
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
