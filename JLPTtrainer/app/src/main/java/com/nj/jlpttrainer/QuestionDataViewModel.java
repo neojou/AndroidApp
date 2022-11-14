@@ -43,11 +43,11 @@ public class QuestionDataViewModel {
 
     void issueGetAllQuestions(final onDataReadyCallback callback) {
         isLoading.set(true);
-        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        Runnable task = () -> {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(()-> {
             Log.v(TAG, "issueGetAllQuestions()");
-            List<Question> questions = q_rep.getAllQuestions();
-            callback.onDataReady(questions);
+            List<Question> lq = q_rep.getAllQuestions();
+            callback.onDataReady(lq);
             /*
             if (questions != null) {
                 Question.log_dump(questions);
@@ -56,9 +56,8 @@ public class QuestionDataViewModel {
 
             isLoading.set(false);
             */
-        };
-        ses.schedule(task, 5, TimeUnit.SECONDS);
-        ses.shutdown();
+        });
+        executor.shutdown();
     }
 
     /*

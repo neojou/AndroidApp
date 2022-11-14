@@ -19,7 +19,6 @@
 
     <TextView
         android:id="@+id/question_title"
-        android:visibility="@{q_dvm.isLoading ? View.INVISIBLE : View.VISIBLE}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/question_title"
@@ -37,7 +36,6 @@
 
     <TextView
         android:id="@+id/choice_title"
-        android:visibility="@{q_dvm.isLoading ? View.INVISIBLE : View.VISIBLE}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/choice_title"
@@ -46,7 +44,6 @@
 
     <RadioGroup
         android:id="@+id/choices"
-        android:visibility="@{q_dvm.isLoading ? View.INVISIBLE : View.VISIBLE}"
         android:layout_width="345dp"
         android:layout_height="191dp"
         android:layout_marginStart="10dp"

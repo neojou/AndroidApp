@@ -13,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioButton;
 
 import java.lang.Integer;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.nj.jlpttrainer.databinding.ActivityMainBinding;
@@ -37,7 +38,6 @@ public class TestActivity extends AppCompatActivity
     String[] choices = new String[4];
     boolean isStarted;
     boolean isFinished;
-    int db_size;
     int q_id;
 
     @Override
@@ -53,33 +53,32 @@ public class TestActivity extends AppCompatActivity
 
         isStarted = false;
         isFinished = false;
-        q_id = 1;
+        q_id = 0;
         button_next.setText(getString(R.string.button_start));
         set_button_click_listener();
 
-        /** setVisibility : View.VISIBLE, View.INVISIBLE, View.GONE */
+        /* setVisibility : View.VISIBLE, View.INVISIBLE, View.GONE */
         //question_title.setVisibility(View.GONE);
         //choice_title.setVisibility(View.GONE);
         //choice_rd.setVisibility(View.GONE);
 
-        /** Need some time to trigger the DB once */
-        //int count = q_dvm.getQuestionsTotalNumber();
-        //question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(count));
-
-        /** once q_dvm finished commands, isLoading is set to false,
+        /* once q_dvm finished commands, isLoading is set to false,
          *  and can start to click the buttons.
          */
-
         q_dvm.issueGetAllQuestions(new QuestionDataViewModel.onDataReadyCallback() {
             @Override
             public void onDataReady(List<Question> lq) {
                 Log.v(TAG, "onDataReady");
                 q_dvm.questions = lq;
+                q_dvm.total_questions = q_dvm.questions.size();
                 q_dvm.isLoading.set(false);
             }
         });
+
+        set_screen_without_question();
     }
 
+    /*
     private void setViewItems() {
         question_title = (TextView)findViewById(R.id.question_title);
         question_content = (TextView)findViewById(R.id.question_content);
@@ -93,6 +92,8 @@ public class TestActivity extends AppCompatActivity
         button_next = (Button)findViewById(R.id.button_next);
         button_setting = (Button)findViewById(R.id.button_setting);
     }
+
+     */
 
     private void setViewItemsBinding() {
         question_title = binding.questionTitle;
@@ -109,7 +110,7 @@ public class TestActivity extends AppCompatActivity
     }
 
     private void set_question_to_view(Question q) {
-        question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(q.id));
+        question_title.setText(getString(R.string.each_question_title, q.id));
         question_content.setText(q.question);
         choice_title.setText(getString(R.string.choice_title));
         choice_rd.clearCheck();
@@ -125,6 +126,7 @@ public class TestActivity extends AppCompatActivity
         set_radio_button_color(choice_rb[1], R.color.gray);
         set_radio_button_color(choice_rb[2], R.color.gray);
         set_radio_button_color(choice_rb[3], R.color.gray);
+        set_screen_with_question();
     }
 
     private void set_button_click_listener() {
@@ -135,17 +137,13 @@ public class TestActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_answer:
-                check_answer();
-                break;
-            case R.id.button_next:
-                next_question();
-                break;
-            case R.id.button_setting:
-                choice_title.setText("Setting");
-                break;
-        }
+        int id = view.getId();
+        if (id == R.id.button_answer)
+            check_answer();
+        else if (id == R.id.button_next)
+            next_question();
+        else if (id == R.id.button_setting)
+            choice_title.setText("Setting");
     }
 
     private void set_radio_button_color(RadioButton rb, int color) {
@@ -163,6 +161,22 @@ public class TestActivity extends AppCompatActivity
         int id = which - 1;
         if (id < 0 || id > 3) return;
         set_radio_button_color(choice_rb[id], R.color.fuchsia);
+    }
+
+    private void set_screen_without_question() {
+        question_content.setVisibility(View.INVISIBLE);
+        choice_title.setVisibility(View.INVISIBLE);
+        choice_rd.setVisibility(View.INVISIBLE);
+        button_answer.setEnabled(false);
+        button_next.setEnabled(true);
+    }
+
+    private void set_screen_with_question() {
+        question_content.setVisibility(View.VISIBLE);
+        choice_title.setVisibility(View.VISIBLE);
+        choice_rd.setVisibility(View.VISIBLE);
+        button_answer.setEnabled(true);
+        button_next.setEnabled(false);
     }
 
     private void check_answer() {
@@ -197,6 +211,8 @@ public class TestActivity extends AppCompatActivity
             choice_title.setText(getString(R.string.choice_title) + " : " +
                                 getString(R.string.correct));
         }
+        button_answer.setEnabled(false);
+        button_next.setEnabled(true);
     }
 
     /*
@@ -224,30 +240,32 @@ public class TestActivity extends AppCompatActivity
      */
 
     private void next_question() {
-        Log.v(TAG, "next_question");
+        //Log.v(TAG, "next_question");
+        int total_questions = q_dvm.total_questions;
 
-        if (isFinished == true)
+        if (isFinished)
             return;
 
-        if (isStarted == false) { // first click
+        if (!isStarted) { // first click
             button_next.setText(getString(R.string.button_next));
             isStarted = true;
             isFinished = false;
-            q_id = 1;
+            q_id = 0;
 
-            int total_questions = q_dvm.total_questions;
             Log.v(TAG, "next_questions() : total_questions = " + Integer.toString(total_questions));
             Log.d(TAG, "total questions = " + Integer.toString(total_questions));
-            question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(total_questions));
+            question_title.setText(getString(R.string.total_question_title, total_questions));
             //q_rep.rearrange(questions);
 
             //if (db_size <= 0)
             //    init_db();
         }
 
-        if (q_id > db_size) {
+        if (q_id >= total_questions) {
             isFinished = true;
             button_next.setText(getString(R.string.button_result));
+            question_title.setText(getString(R.string.question_title));
+            set_screen_without_question();
         }
         if (isFinished == false) {
             q = generate_question();
@@ -255,30 +273,27 @@ public class TestActivity extends AppCompatActivity
     }
 
     private Question generate_question() {
-        Log.v(TAG, "generate_question");
-
         List<Question> questions = q_dvm.questions;
 
         if (questions == null || questions.isEmpty() ) {
             Log.e(TAG, "CANNOT access Questions DB");
             q.generate_question();
         } else {
-            Log.v(TAG, "show all questions");
-            Question.log_dump(questions);
+            //Log.v(TAG, "show all questions");
+            //Question.log_dump(questions);
         }
 
-        Question q1 = (Question)questions.get(0);
+        Question q1 = (Question)questions.get(q_id);
         if (q1 == null) {
             Log.e(TAG, "generate_question list error");
             q.generate_question();
         } else {
-            q.copy(q1);
+            q = q1;
             q_id++;
         }
-        Log.d(TAG, "next q1: " + Integer.toString(q1.id) + " : " + q1.question);
+        //Log.d(TAG, "next q1: " + Integer.toString(q1.id) + " : " + q1.question);
 
         set_question_to_view(q);
-        Log.v(TAG, "generate_question finished");
         return q;
     }
 }
