@@ -71,6 +71,16 @@ public class Question {
     public Question() {
     }
 
+    public void copy(Question qc) {
+        this.id = qc.id;
+        this.question = qc.question;
+        this.choice1 = qc.choice1;
+        this.choice2 = qc.choice2;
+        this.choice3 = qc.choice3;
+        this.choice4 = qc.choice4;
+        this.right_choice = qc.right_choice;
+    }
+
     public static Question fromContentValues(@Nullable ContentValues values) {
         final Question question = new Question();
 

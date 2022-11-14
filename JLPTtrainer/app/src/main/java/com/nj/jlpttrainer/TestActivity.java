@@ -19,7 +19,8 @@ public class TestActivity extends AppCompatActivity
     implements View.OnClickListener
 {
     private static final String TAG="JLPT_trainer:TestActivity";
-    private QuestionRepository q_rep;
+    QuestionDataModel q_dm;
+
     Question q = new Question();
     TextView question_title;
     TextView question_content;
@@ -41,15 +42,21 @@ public class TestActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         setViewItems();
-        initial_question_rep();
+
+        q_dm = new QuestionDataModel(getApplication());
 
         isStarted = false;
         isFinished = false;
-        q_id = 0;
+        q_id = 1;
         button_next.setText(getString(R.string.button_start));
 
+        /** setVisibility : View.VISIBLE, View.INVISIBLE, View.GONE */
+        //question_title.setVisibility(View.GONE);
+        choice_title.setVisibility(View.GONE);
+        choice_rd.setVisibility(View.GONE);
+
         /** Need some time to trigger the DB once */
-        int count = (int)q_rep.count();
+        int count = q_dm.getQuestionsTotalNumber();
         question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(count));
 
         set_button_click_listener();
@@ -67,10 +74,6 @@ public class TestActivity extends AppCompatActivity
         button_answer = (Button)findViewById(R.id.button_answer);
         button_next = (Button)findViewById(R.id.button_next);
         button_setting = (Button)findViewById(R.id.button_setting);
-    }
-
-    private void initial_question_rep() {
-        q_rep = new QuestionRepository(getApplication());;
     }
 
     private void set_question_to_view(Question q) {
@@ -199,12 +202,12 @@ public class TestActivity extends AppCompatActivity
             button_next.setText(getString(R.string.button_next));
             isStarted = true;
             isFinished = false;
-            q_id = 0;
+            q_id = 1;
 
-            db_size = (int)q_rep.count();
+            db_size = q_dm.getQuestionsTotalNumber();
             Log.d(TAG, "db size = " + Integer.toString(db_size));
             question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(db_size));
-            List<Question> questions = q_rep.getAllQuestions();
+            List<Question> questions = q_dm.getAllQuestions();
             Question.log_dump(questions);
             //q_rep.rearrange(questions);
 
@@ -223,7 +226,7 @@ public class TestActivity extends AppCompatActivity
 
     private Question generate_question() {
         Log.v(TAG, "generate_question");
-        List<Question> questions = q_rep.getQuestionById(q_id);
+        List<Question> questions = q_dm.getQuestionById(q_id);
         if (questions == null || questions.isEmpty()) {
             Log.e(TAG, "Access DB failed: lost data ID:" + Integer.toString(q_id));
             q.generate_question();
@@ -234,10 +237,11 @@ public class TestActivity extends AppCompatActivity
             if (q1 == null) {
                 Log.e(TAG, "generate_question list error");
                 q.generate_question();
+            } else {
+                q.copy(q1);
+                q_id++;
             }
             Log.d(TAG, "next q1: " + Integer.toString(q1.id) + " : " + q1.question);
-            q = q1;
-            q_id++;
         }
         set_question_to_view(q);
         Log.v(TAG, "generate_question finished");

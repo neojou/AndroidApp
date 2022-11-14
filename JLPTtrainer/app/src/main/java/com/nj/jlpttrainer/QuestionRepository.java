@@ -29,12 +29,7 @@ public class QuestionRepository {
     }
 
     public long count() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(()-> {
-            count = questionDao.count();
-        });
-        executor.shutdown();
-        return count;
+        return questionDao.count();
     }
 
     public void insert(Question q) {
@@ -66,11 +61,7 @@ public class QuestionRepository {
     }
 
     public List<Question> getQuestionById(int id) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(()->{
-            results = questionDao.selectById(id);
-        });
-        executor.shutdown();
+        results = questionDao.selectById(id);
         return results;
     }
 
@@ -84,11 +75,7 @@ public class QuestionRepository {
     }
 
     public List<Question> getAllQuestions() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(()->{
-            results = questionDao.selectAll();
-        });
-        executor.shutdown();
+        results = questionDao.selectAll();
         return results;
     }
 

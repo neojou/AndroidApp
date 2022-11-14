@@ -9,6 +9,10 @@ import android.database.Cursor;
 
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+
+
 @Dao
 public interface QuestionDAO {
     /**
@@ -23,10 +27,9 @@ public interface QuestionDAO {
      * Inserts a question into the table.
      *
      * @param question A new question.
-     * @return The row ID of the newly inserted question.
      */
     @Insert
-    long insert(Question question);
+    void insert(Question question);
 
     /**
      * Inserts multiple cheeses into the database
