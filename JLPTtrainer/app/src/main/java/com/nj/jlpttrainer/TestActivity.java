@@ -1,6 +1,8 @@
 package com.nj.jlpttrainer;
 
-import android.app.Application;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,14 +11,11 @@ import android.widget.TextView;
 import android.widget.RadioGroup;
 import android.widget.RadioButton;
 
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.AndroidViewModel;
-
 import java.lang.Integer;
 import java.util.List;
 
 
-public class TestActivity extends MainActivity
+public class TestActivity extends AppCompatActivity
     implements View.OnClickListener
 {
     private static final String TAG="JLPT_trainer:TestActivity";
@@ -32,22 +31,27 @@ public class TestActivity extends MainActivity
     Button button_setting;
     String[] choices = new String[4];
     boolean isStarted;
+    boolean isFinished;
+    int db_size;
+    int q_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         setViewItems();
         initial_question_rep();
 
         isStarted = false;
+        isFinished = false;
+        q_id = 0;
         button_next.setText(getString(R.string.button_start));
 
         /** Need some time to trigger the DB once */
         int count = (int)q_rep.count();
         question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(count));
 
-        //q = generate_question(q);
         set_button_click_listener();
     }
 
@@ -65,30 +69,12 @@ public class TestActivity extends MainActivity
         button_setting = (Button)findViewById(R.id.button_setting);
     }
 
-    private Question generate_question(Question q) {
-        int count = (int)q_rep.count();
-        Log.v(TAG, "db count() = " + Integer.toString(count));
-
-        List<Question> questions = q_rep.getAllQuestions();
-        Question.log_dump(questions);
-
-        q.generate_question();
-        set_question_to_view(q);
-        return q;
-    }
-
     private void initial_question_rep() {
         q_rep = new QuestionRepository(getApplication());;
-        /*
-        Question question = new Question();
-        question.set_to_q1();
-        q_rep.insert(q);
-         */
     }
 
     private void set_question_to_view(Question q) {
-        int count = (int)q_rep.count();
-        question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(count));
+        question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(q.id));
         question_content.setText(q.question);
         choice_title.setText(getString(R.string.choice_title));
         choice_rd.clearCheck();
@@ -150,6 +136,8 @@ public class TestActivity extends MainActivity
     private void check_answer() {
         if (isStarted == false)
             return;
+        if (isFinished == true)
+            return;
 
         int answer = 0;
         switch(choice_rd.getCheckedRadioButtonId()) {
@@ -179,12 +167,82 @@ public class TestActivity extends MainActivity
         }
     }
 
+    /*
+    private void init_db() {
+        Question question = new Question();
+        question.set_to_q1();
+        q_rep.insert(question);
+        question = new Question();
+        question.set_to_q2();
+        q_rep.insert(question);
+        question = new Question();
+        question.set_to_q3();
+        q_rep.insert(question);
+        question = new Question();
+        question.set_to_q4();
+        q_rep.insert(question);
+        question = new Question();
+        question.set_to_q5();
+        q_rep.insert(question);
+        question = new Question();
+        question.set_to_q6();
+        q_rep.insert(question);
+    }
+
+     */
+
     private void next_question() {
+        if (isFinished == true)
+            return;
+
         if (isStarted == false) { // first click
             button_next.setText(getString(R.string.button_next));
             isStarted = true;
+            isFinished = false;
+            q_id = 0;
+
+            db_size = (int)q_rep.count();
+            Log.d(TAG, "db size = " + Integer.toString(db_size));
+            question_title.setText(getString(R.string.question_title) + " : " + Integer.toString(db_size));
+            List<Question> questions = q_rep.getAllQuestions();
+            Question.log_dump(questions);
+            //q_rep.rearrange(questions);
+
+            //if (db_size <= 0)
+            //    init_db();
         }
-        generate_question(q);
+
+        if (q_id > db_size) {
+            isFinished = true;
+            button_next.setText(getString(R.string.button_result));
+        }
+        if (isFinished == false) {
+            q = generate_question();
+        }
+    }
+
+    private Question generate_question() {
+        Log.v(TAG, "generate_question");
+        List<Question> questions = q_rep.getQuestionById(q_id);
+        if (questions == null || questions.isEmpty()) {
+            Log.e(TAG, "Access DB failed: lost data ID:" + Integer.toString(q_id));
+            q.generate_question();
+        } else {
+            Question.log_dump(questions);
+
+            Question q1 = (Question)questions.get(0);
+            if (q1 == null) {
+                Log.e(TAG, "generate_question list error");
+                q.generate_question();
+            }
+            Log.d(TAG, "next q1: " + Integer.toString(q1.id) + " : " + q1.question);
+            q = q1;
+            q_id++;
+        }
+        set_question_to_view(q);
+        Log.v(TAG, "generate_question finished");
+
+        return q;
     }
 }
 

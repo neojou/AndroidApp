@@ -40,7 +40,7 @@ public interface QuestionDAO {
     /**
      * Select all questions.
      *
-     * @return A {@link Cursor} of all the questions in the table.
+     * @return A List of all the questions in the table.
      */
     @Query("SELECT * FROM " + Question.TABLE_NAME)
     List<Question> selectAll();
@@ -52,8 +52,16 @@ public interface QuestionDAO {
      * @return the List of the selected questions.
      */
     @Query("SELECT * FROM " + Question.TABLE_NAME + " WHERE " + Question.COLUMN_ID + " = :id")
-    List<Question> selectById(long id);
+    List<Question> selectById(int id);
 
+    /**
+     * Select a question by the ID.
+     *
+     * @param id The row ID.
+     * @return the List of the selected questions.
+     */
+    @Query("SELECT * FROM " + Question.TABLE_NAME + " WHERE " + Question.COLUMN_QUESTION + " like :q")
+    List<Question> selectByQuestion(String q);
 
     /**
      * Delete a question by the ID

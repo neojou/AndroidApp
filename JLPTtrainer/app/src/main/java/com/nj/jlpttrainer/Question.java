@@ -19,7 +19,7 @@ public class Question {
     public static final String TABLE_NAME = "JLPTquestions";
 
     /** The name of the ID column. */
-    public static final String COLUMN_ID = BaseColumns._ID;
+    public static final String COLUMN_ID = "id";
 
     /** The name of the question column */
     public static final String COLUMN_QUESTION = "question";
@@ -40,9 +40,9 @@ public class Question {
     public static final String COLUMN_RIGHT_CHOICE = "right_choice";
 
     /** The unique ID of the Question */
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(index = true, name = COLUMN_ID)
-    public long id;
+    @PrimaryKey
+    @ColumnInfo(name = COLUMN_ID)
+    public int id;
 
     /** The description of the question */
     @ColumnInfo(name = COLUMN_QUESTION)
@@ -73,13 +73,37 @@ public class Question {
 
     public static Question fromContentValues(@Nullable ContentValues values) {
         final Question question = new Question();
-        if (values != null && values.containsKey(COLUMN_ID)) {
-            question.id = values.getAsLong(COLUMN_ID);
+
+        if (values == null) return question;
+
+        if (values.containsKey(COLUMN_ID)) {
+            question.id = values.getAsInteger(COLUMN_ID);
         }
-        if (values != null && values.containsKey(COLUMN_QUESTION)) {
+        if (values.containsKey(COLUMN_QUESTION)) {
             question.question = values.getAsString(COLUMN_QUESTION);
         }
+        if (values.containsKey(COLUMN_CHOICE1)) {
+            question.choice1 = values.getAsString(COLUMN_CHOICE1);
+        }
+        if (values.containsKey(COLUMN_CHOICE2)) {
+            question.choice2 = values.getAsString(COLUMN_CHOICE2);
+        }
+        if (values.containsKey(COLUMN_CHOICE3)) {
+            question.choice2 = values.getAsString(COLUMN_CHOICE3);
+        }
+        if (values.containsKey(COLUMN_CHOICE4)) {
+            question.choice2 = values.getAsString(COLUMN_CHOICE4);
+        }
+        if (values.containsKey(COLUMN_RIGHT_CHOICE)) {
+            question.id = values.getAsInteger(COLUMN_RIGHT_CHOICE);
+        }
         return question;
+    }
+
+    public void log_dump() {
+        Log.d(TAG, Integer.toString(id) + " : " + question);
+        Log.d(TAG, "[1] " + choice1 + "[2] " + choice2 + "[3] " + choice3 + "[4] " + choice4);
+        Log.d(TAG, "right answer: " + right_choice);
     }
 
     public static void log_dump(List<Question> qlist) {
@@ -87,14 +111,15 @@ public class Question {
 
         if (qlist == null) return;
         sz = qlist.size();
-        Log.v(TAG, "Question List size =" + Integer.toString(sz));
+        Log.d(TAG, "Question List size =" + Integer.toString(sz));
         for (int i = 0; i < sz; i++) {
             Question q = qlist.get(i);
-            Log.v(TAG, Long.toString(q.id) + " : " + q.question);
+            q.log_dump();
         }
     }
 
     public void set_to_q1() {
+        id = 1;
         question = "都心（　　　　）、このあたりはまだ緑が多く残っていて鳥の声も聞こえる。";
         choice1 = "とあって";
         choice2 = "とはいえ";
@@ -104,6 +129,7 @@ public class Question {
     }
 
     public void set_to_q2() {
+        id = 2;
         question = "子供では（　　　　　）、自分のことぐらい自分でしなさい";
         choice1 = "あるまいし";
         choice2 = "あれ";
@@ -114,6 +140,7 @@ public class Question {
 
 
     public void set_to_q3() {
+        id = 3;
         question = "家庭は子供が大部分の時間を過ごす場所である。（　　　　　）、私は家庭でのしつけが一番重要だとかんがえるのです。";
         choice1 = "それなりに";
         choice2 = "それゆえに";
@@ -124,6 +151,7 @@ public class Question {
 
 
     public void set_to_q4() {
+        id = 4;
         question = "彼は貧しさ（　　　　）十分な教育が受けられなかった。";
         choice1 = "ゆえに";
         choice2 = "なりに";
@@ -133,6 +161,7 @@ public class Question {
     }
 
     public void set_to_q5() {
+        id = 5;
         question = "さんざん考えた末、私（　　　　）作った企画がこれです。";
         choice1 = "だけに";
         choice2 = "ゆえに";
@@ -142,6 +171,7 @@ public class Question {
     }
 
     public void set_to_q6() {
+        id = 6;
         question = "国民の期待というプレッシャーの大きさは（　　　　　　　　）が、彼女はそれを見事に克服して、金メダルを獲得した。";
         choice1 = "想像にかたくない";
         choice2 = "想像できな";
