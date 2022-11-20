@@ -7,6 +7,11 @@ import android.util.Log;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -14,11 +19,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public class QuestionDataViewModel {
     private static final String TAG="JLPT_trainer:QuestionDataViewModel";
 
     public final ObservableBoolean isLoading = new ObservableBoolean(false);
 
+    Application app;
     private QuestionRepository q_rep;
     int total_questions = 0;
     List<Question> questions;
@@ -28,7 +36,8 @@ public class QuestionDataViewModel {
     }
 
     public QuestionDataViewModel(Application application) {
-        q_rep = new QuestionRepository(application);;
+        app = application;
+        q_rep = new QuestionRepository(app);;
     }
 
     public void importFromTxtFile(final onDataReadyCallback callback)  {
@@ -72,14 +81,12 @@ public class QuestionDataViewModel {
     }
 
     private void import_from_txt_file_thread() {
-        Log.v(TAG, "import_from_txt_file_thread");
-        Log.v(TAG, "start to sleep 10 sec");
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.v(TAG, "awake");
+        InputStream is;
+
+        is = app.getResources().openRawResource(R.raw.questions);
+        QuestionParser qp = new QuestionParser(is);
+        qp.getQuestion();
+        qp.close();
     }
 
     /*
