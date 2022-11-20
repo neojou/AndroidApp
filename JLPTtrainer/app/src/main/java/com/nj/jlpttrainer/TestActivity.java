@@ -68,7 +68,7 @@ public class TestActivity extends AppCompatActivity
     private void setFragments() {
         frag_question = new FragmentQuestion(q_dvm);
         frag_image = new FragmentImage();
-        frag_setting = new FragmentSetting();
+        frag_setting = new FragmentSetting(q_dvm);
 
         fragment_manager = getSupportFragmentManager();
         if (fragment_manager != null) {

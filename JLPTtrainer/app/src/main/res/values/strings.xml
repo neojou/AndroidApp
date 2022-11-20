@@ -16,5 +16,7 @@
     // Setting
     <string name="setting_title">設定</string>
     <string name="setting_button_import_str">問題匯入</string>
+    <string name="setting_status_in_progress">處理中</string>
+    <string name="setting_status_completed">完成</string>
 
 </resources>

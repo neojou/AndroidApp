@@ -31,6 +31,17 @@ public class QuestionDataViewModel {
         q_rep = new QuestionRepository(application);;
     }
 
+    public void importFromTxtFile(final onDataReadyCallback callback)  {
+        isLoading.set(true);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(()-> {
+            import_from_txt_file_thread();
+            callback.onDataReady(null);
+            isLoading.set(false);
+        });
+        executor.shutdown();
+    }
+
     public void issueGetTotalNumber() {
         isLoading.set(true);
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -58,6 +69,17 @@ public class QuestionDataViewModel {
             */
         });
         executor.shutdown();
+    }
+
+    private void import_from_txt_file_thread() {
+        Log.v(TAG, "import_from_txt_file_thread");
+        Log.v(TAG, "start to sleep 10 sec");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.v(TAG, "awake");
     }
 
     /*
