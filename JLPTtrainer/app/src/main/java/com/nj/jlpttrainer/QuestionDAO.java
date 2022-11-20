@@ -60,7 +60,7 @@ public interface QuestionDAO {
     /**
      * Select a question by the ID.
      *
-     * @param id The row ID.
+     * @param q The description of the question
      * @return the List of the selected questions.
      */
     @Query("SELECT * FROM " + Question.TABLE_NAME + " WHERE " + Question.COLUMN_QUESTION + " like :q")

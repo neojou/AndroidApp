@@ -21,10 +21,11 @@ public class TestActivity extends AppCompatActivity
 {
     private static final String TAG="JLPT_trainer:TestActivity";
 
-    FragmentQuestion frag_question;
     private ActivityMainBinding binding;
     private QuestionDataViewModel q_dvm;
 
+    FragmentQuestion frag_question;
+    FragmentImage frag_image;
 
     Button button_answer;
     Button button_next;
@@ -45,6 +46,7 @@ public class TestActivity extends AppCompatActivity
             setViewItemsBinding();
             binding.setQDvm(q_dvm);
             frag_question = new FragmentQuestion(q_dvm);
+            frag_image = new FragmentImage();
 
             isStarted = false;
             isFinished = false;
@@ -52,14 +54,14 @@ public class TestActivity extends AppCompatActivity
             button_next.setText(getString(R.string.button_start));
             set_button_click_listener();
 
-/*
             FragmentManager fManager = getSupportFragmentManager();
             FragmentTransaction ft = fManager.beginTransaction();
-            ft.add(R.id.fragment_main, frag_question);
-            ft.replace(R.id.fragment_main, frag_question);
+            ft.add(R.id.fragment_main, frag_image);
             ft.commit();
+            //ft.add(R.id.fragment_main, frag_question);
+            //ft.replace(R.id.fragment_main, frag_question);
+            //ft.commit();
 
- */
         }
     }
 
