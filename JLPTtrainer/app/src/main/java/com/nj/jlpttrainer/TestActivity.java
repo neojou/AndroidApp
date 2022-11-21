@@ -2,7 +2,6 @@ package com.nj.jlpttrainer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,15 +13,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.nj.jlpttrainer.databinding.ActivityMainBinding;
 
-import java.util.List;
-
 
 public class TestActivity extends AppCompatActivity
         implements View.OnClickListener
 {
     private static final String TAG="JLPT_trainer:TestActivity";
 
-    private ActivityMainBinding binding;
     private QuestionDataViewModel q_dvm;
 
     FragmentManager fragment_manager;
@@ -30,13 +26,18 @@ public class TestActivity extends AppCompatActivity
     FragmentImage frag_image;
     FragmentSetting frag_setting;
 
+    Button button_load_db;
+    Button button_start;
     Button button_answer;
     Button button_next;
+    Button button_finished;
     Button button_setting;
     Button button_return;
 
+    boolean isDBloaded;
     boolean isStarted;
     boolean isFinished;
+    boolean isAnswered;
 
 
     @Override
@@ -44,23 +45,29 @@ public class TestActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-
-            setViewItemsBinding();
+            bindingViewItems();
             setButtons();
             setFragments();
 
+            isDBloaded = false;
             isStarted = false;
             isFinished = false;
+            isAnswered = false;
             frag_question.q_id = 0;
         }
     }
 
-    private void setViewItemsBinding() {
+    private void bindingViewItems() {
+        ActivityMainBinding binding;
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         q_dvm = new QuestionDataViewModel(getApplication());
         binding.setQDvm(q_dvm);
+        button_load_db = binding.buttonLoadDb;
+        button_start = binding.buttonStart;
         button_answer = binding.buttonAnswer;
         button_next = binding.buttonNext;
+        button_finished = binding.buttonFinished;
         button_setting = binding.buttonSetting;
         button_return = binding.buttonReturn;
     }
@@ -71,25 +78,23 @@ public class TestActivity extends AppCompatActivity
         frag_setting = new FragmentSetting(q_dvm);
 
         fragment_manager = getSupportFragmentManager();
-        if (fragment_manager != null) {
-            FragmentTransaction ft = fragment_manager.beginTransaction();
-            ft.add(R.id.fragment_main, frag_image, "Image");
-            ft.commit();
-        } else {
-            Log.e(TAG, "fragment_manager is null");
-        }
+        FragmentTransaction ft = fragment_manager.beginTransaction();
+        ft.add(R.id.fragment_main, frag_image, "Image");
+        ft.commit();
 
-        set_screen_to_main();
+        set_buttons_to_main();
     }
 
     private void setButtons() {
-        button_next.setText(getString(R.string.button_start_str));
         set_button_click_listener();
     }
 
     private void set_button_click_listener() {
+        button_load_db.setOnClickListener(this);
+        button_start.setOnClickListener(this);
         button_next.setOnClickListener(this);
         button_answer.setOnClickListener(this);
+        button_finished.setOnClickListener(this);
         button_setting.setOnClickListener(this);
         button_return.setOnClickListener(this);
     }
@@ -97,18 +102,45 @@ public class TestActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.button_answer)
-            check_answer();
+        if (id == R.id.button_start)
+            to_question_frag();
+        else if (id == R.id.button_answer)
+            to_check_answer();
         else if (id == R.id.button_next)
-            next_question();
+            to_next_question();
+        else if (id == R.id.button_finished)
+            to_question_finished();
+        else if (id == R.id.button_load_db)
+            to_load_db();
         else if (id == R.id.button_setting)
-            setting();
+            to_setting();
         else if (id == R.id.button_return)
             return_to_main();
     }
 
-    private void check_answer() {
+    private void to_load_db() {
+        Log.v(TAG, "to_load_db");
+        q_dvm.load_db();
+    }
+
+    private void to_question_frag() {
+        Log.v(TAG, "to_question_frag");
+        isStarted = true;
+        isFinished = false;
+        isAnswered = false;
+        set_buttons_to_question();
+    }
+
+    private void to_question_finished() {
+        Log.v(TAG, "to_question_frag");
+        isFinished = true;
+        set_buttons_to_return_only();
+    }
+
+    private void to_check_answer() {
         Log.v(TAG, "check_answer");
+        isAnswered = true;
+        set_buttons_to_question();
         /*
         if (isStarted == false)
             return;
@@ -148,8 +180,10 @@ public class TestActivity extends AppCompatActivity
     }
 
 
-    private void next_question() {
+    private void to_next_question() {
         Log.v(TAG, "next_question");
+        isAnswered = false;
+        set_buttons_to_question();
         /*
         int total_questions = q_dvm.total_questions;
 
@@ -214,7 +248,7 @@ public class TestActivity extends AppCompatActivity
          */
     }
 
-    private void setting() {
+    private void to_setting() {
         Log.v(TAG, "setting");
 
         FragmentTransaction ft = fragment_manager.beginTransaction();
@@ -234,28 +268,53 @@ public class TestActivity extends AppCompatActivity
         ft.addToBackStack("HOME");
         ft.commit();
 
-        set_screen_to_setting();
+        set_buttons_to_return_only();
     }
 
     private void return_to_main() {
         Log.v(TAG, "return to main");
 
         fragment_manager.popBackStack("HOME", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        set_screen_to_main();
+        set_buttons_to_main();
     }
 
-    private void set_screen_to_setting() {
-        button_answer.setVisibility(View.INVISIBLE);
-        button_next.setVisibility(View.INVISIBLE);
-        button_setting.setVisibility(View.INVISIBLE);
-        button_return.setVisibility(View.VISIBLE);
-    }
-
-    private void set_screen_to_main() {
-        button_answer.setVisibility(View.VISIBLE);
-        button_next.setVisibility(View.VISIBLE);
+    private void set_buttons_to_main() {
+        button_load_db.setVisibility(View.VISIBLE);
+        button_start.setVisibility(View.VISIBLE);
+        button_finished.setVisibility(View.GONE);
+        button_answer.setVisibility(View.GONE);
+        button_next.setVisibility(View.GONE);
         button_setting.setVisibility(View.VISIBLE);
         button_return.setVisibility(View.GONE);
+    }
+
+    private void set_buttons_to_question() {
+        button_load_db.setVisibility(View.GONE);
+        button_start.setVisibility(View.GONE);
+        button_answer.setVisibility(View.VISIBLE);
+        button_next.setVisibility(View.VISIBLE);
+        button_finished.setVisibility(View.VISIBLE);
+        if (!isAnswered) {
+            button_answer.setEnabled(true);
+            button_next.setEnabled(false);
+            button_finished.setEnabled(false);
+        } else {
+            button_answer.setEnabled(false);
+            button_next.setEnabled(true);
+            button_finished.setEnabled(true);
+        }
+        button_setting.setVisibility(View.GONE);
+        button_return.setVisibility(View.GONE);
+    }
+
+    private void set_buttons_to_return_only() {
+        button_load_db.setVisibility(View.GONE);
+        button_start.setVisibility(View.GONE);
+        button_answer.setVisibility(View.GONE);
+        button_next.setVisibility(View.GONE);
+        button_finished.setVisibility(View.GONE);
+        button_setting.setVisibility(View.GONE);
+        button_return.setVisibility(View.VISIBLE);
     }
 
 }

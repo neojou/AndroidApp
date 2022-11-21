@@ -66,26 +66,6 @@ public class FragmentQuestion extends Fragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        /* setVisibility : View.VISIBLE, View.INVISIBLE, View.GONE */
-        //question_title.setVisibility(View.GONE);
-        //choice_title.setVisibility(View.GONE);
-        //choice_rd.setVisibility(View.GONE);
-
-        /* once q_dvm finished commands, isLoading is set to false,
-         *  and can start to click the buttons.
-         */
-        /*
-        q_dvm.issueGetAllQuestions(new QuestionDataViewModel.onDataReadyCallback() {
-            @Override
-            public void onDataReady(List<Question> lq) {
-                Log.v(TAG, "onDataReady");
-                q_dvm.questions = lq;
-                q_dvm.total_questions = q_dvm.questions.size();
-                q_dvm.isLoading.set(false);
-            }
-        });
-*/
         set_screen_without_question();
     }
 

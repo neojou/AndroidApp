@@ -27,11 +27,33 @@
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/button_layout"
+        android:id="@+id/layout_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
+
+        <Button
+            android:id="@+id/button_load_db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_load_db_str"
+            app:layout_constraintEnd_toStartOf="@+id/button_start"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <Button
+            android:id="@+id/button_start"
+            android:enabled="@{q_dvm.isDBloaded ? true : false}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_start_str"
+            app:layout_constraintEnd_toStartOf="@+id/button_answer"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_load_db"
+            />
 
         <Button
             android:id="@+id/button_answer"
@@ -40,8 +62,7 @@
             android:text="@string/button_answer_str"
             app:layout_constraintEnd_toStartOf="@+id/button_next"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_start"
             />
 
         <Button
@@ -50,9 +71,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_next_str"
-            app:layout_constraintEnd_toStartOf="@+id/button_setting"
+            app:layout_constraintEnd_toStartOf="@+id/button_finished"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/button_answer"
+            />
+
+        <Button
+            android:id="@+id/button_finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_finished_str"
+            app:layout_constraintEnd_toStartOf="@+id/button_setting"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_next"
             />
 
         <Button
@@ -62,7 +93,7 @@
             android:text="@string/button_setting_str"
             app:layout_constraintEnd_toStartOf="@+id/button_return"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_next"
+            app:layout_constraintStart_toEndOf="@+id/button_finished"
             />
 
         <Button
@@ -83,10 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="@{q_dvm.isLoading ? View.VISIBLE : View.GONE}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
 
     <androidx.constraintlayout.helper.widget.Flow
@@ -94,7 +122,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:constraint_referenced_ids="fragment_main, progressBar, button_layout"
+        app:constraint_referenced_ids="fragment_main, progressBar, layout_buttons"
         app:flow_horizontalAlign="center"
         app:flow_verticalAlign="bottom"
         app:flow_verticalStyle="spread"

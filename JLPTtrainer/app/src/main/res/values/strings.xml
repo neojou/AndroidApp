@@ -4,8 +4,10 @@
     <string name="total_question_title">問題 共 %1$d 個</string>
     <string name="each_question_title">第 %1$d 題</string>
     <string name="choice_title">選擇</string>
+    <string name="button_load_db_str">載入題庫</string>
+    <string name="button_start_str">開始做題</string>
+    <string name="button_finished_str">結束</string>
     <string name="button_answer_str">回答</string>
-    <string name="button_start_str">開始</string>
     <string name="button_next_str">下一題</string>
     <string name="button_setting_str">設定</string>
     <string name="button_return_str">回主畫面</string>

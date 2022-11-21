@@ -25,6 +25,7 @@ public class QuestionDataViewModel {
     private static final String TAG="JLPT_trainer:QuestionDataViewModel";
 
     public final ObservableBoolean isLoading = new ObservableBoolean(false);
+    public final ObservableBoolean isDBloaded = new ObservableBoolean(false);
 
     Application app;
     private QuestionRepository q_rep;
@@ -51,14 +52,17 @@ public class QuestionDataViewModel {
         executor.shutdown();
     }
 
-    public void issueGetTotalNumber() {
-        isLoading.set(true);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(()-> {
-            total_questions = (int)q_rep.count();
-            isLoading.set(false);
+    public void load_db() {
+        issueGetAllQuestions(new QuestionDataViewModel.onDataReadyCallback() {
+            @Override
+            public void onDataReady(List<Question> lq) {
+                questions = lq;
+                total_questions = questions.size();
+                Log.v(TAG, "total_questions :" + Integer.toString(total_questions));
+                isLoading.set(false);
+                isDBloaded.set(true);
+            }
         });
-        executor.shutdown();
     }
 
     void issueGetAllQuestions(final onDataReadyCallback callback) {
@@ -68,14 +72,6 @@ public class QuestionDataViewModel {
             Log.v(TAG, "issueGetAllQuestions()");
             List<Question> lq = q_rep.getAllQuestions();
             callback.onDataReady(lq);
-            /*
-            if (questions != null) {
-                Question.log_dump(questions);
-                total_questions = questions.size();
-            }
-
-            isLoading.set(false);
-            */
         });
         executor.shutdown();
     }

@@ -6,6 +6,7 @@ import android.os.Message;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.databinding.ObservableBoolean;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.LiveData;
 
