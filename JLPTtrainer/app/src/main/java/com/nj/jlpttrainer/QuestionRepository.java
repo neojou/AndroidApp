@@ -32,24 +32,75 @@ public class QuestionRepository {
         return questionDao.count();
     }
 
+    public void insert_direct(Question q) {
+        questionDao.insert(q);
+    }
+
+    public void update_direct(Question q) {
+        questionDao.update(q);
+    }
+
+    public void insertAll_direct(Question[] qa) {
+        questionDao.insertAll(qa);
+    }
+
     public void insert(Question q) {
-        /*
-        Log.v(TAG, "insert");
-        List<Question> res = getQuestionByQuestion(q.question);
-        Question.log_dump(res);
-        if (res != null && res.size() > 0) { // duplicated
-            Question d = res.get(0);
-            Log.v(TAG, "The question we want to insert has been inserted");
-            Log.v(TAG, "DB duplicated number: " + Integer.toString(res.size()));
-            Log.v(TAG, Long.toString(d.id) + " " + d.question);
-            return;
-        }
-        */
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(()->{
-            questionDao.insert(q);
+            insert_direct(q);
         });
         executor.shutdown();
+    }
+
+    public void update(Question q) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(()->{
+            update_direct(q);
+        });
+        executor.shutdown();
+    }
+
+    void insertOrUpdate_direct(Question question) {
+        List<Question> itemsFromDB = questionDao.selectById(question.id);
+        if (itemsFromDB.isEmpty())
+            insert(question);
+        else
+            update(question);
+    }
+
+    public void updateAll(List<Question> ql) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(()->{
+            updateAll_direct(ql);
+        });
+        executor.shutdown();
+    }
+
+    public void updateAll_direct(List<Question> ql) {
+        ArrayList<Question> insertList = new ArrayList<Question>();
+        ArrayList<Question> updateList = new ArrayList<Question>();
+        ListIterator<Question> qiter;
+
+        if (ql == null) return;
+
+        qiter= ql.listIterator();
+        while (qiter.hasNext()) {
+            Question q = qiter.next();
+            List<Question> itemsFromDB = questionDao.selectById(q.id);
+            if (itemsFromDB.isEmpty())
+                insertList.add(q);
+            else
+                updateList.add(q);
+        }
+
+        if (insertList.size() != 0)
+            insertAll_direct(insertList.toArray(new Question[0]));
+
+        qiter = updateList.listIterator();
+        while (qiter.hasNext()) {
+            Question q = qiter.next();
+            update_direct(q);
+        }
     }
 
     public void deleteQuestionById(int id) {

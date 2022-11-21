@@ -41,8 +41,8 @@ public class QuestionDataViewModel {
     }
 
     public void importFromTxtFile(final onDataReadyCallback callback)  {
-        isLoading.set(true);
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        isLoading.set(true);
         executor.submit(()-> {
             import_from_txt_file_thread();
             callback.onDataReady(null);
@@ -85,8 +85,14 @@ public class QuestionDataViewModel {
 
         is = app.getResources().openRawResource(R.raw.questions);
         QuestionParser qp = new QuestionParser(is);
-        qp.getQuestion();
+        ArrayList<Question> ql = new ArrayList<Question>();
+        Question q;
+        while ((q = qp.getQuestion()) != null) {
+                q.log_dump();
+                ql.add(q);
+        };
         qp.close();
+        q_rep.updateAll_direct(ql);
     }
 
     /*

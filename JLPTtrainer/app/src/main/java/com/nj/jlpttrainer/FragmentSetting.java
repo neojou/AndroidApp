@@ -94,9 +94,6 @@ public class FragmentSetting extends Fragment
         Log.v(TAG, "question_import()");
 
         setting_status.setText(getString(R.string.setting_status_in_progress));
-
-
-        q_dvm.isLoading.set(true);
         q_dvm.importFromTxtFile(data_rdy_callback);
         Log.v(TAG, "question_import() issued");
     }

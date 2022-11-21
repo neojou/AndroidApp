@@ -112,7 +112,7 @@ public class Question {
 
     public void log_dump() {
         Log.d(TAG, Integer.toString(id) + " : " + question);
-        Log.d(TAG, "[1] " + choice1 + "[2] " + choice2 + "[3] " + choice3 + "[4] " + choice4);
+        Log.d(TAG, "[1]" + choice1 + " [2]" + choice2 + " [3]" + choice3 + " [4]" + choice4);
         Log.d(TAG, "right answer: " + right_choice);
     }
 
