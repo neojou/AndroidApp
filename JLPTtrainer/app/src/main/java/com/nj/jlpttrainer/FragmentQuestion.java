@@ -1,6 +1,7 @@
 package com.nj.jlpttrainer;
 
 import android.os.Bundle;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +26,21 @@ import java.lang.Integer;
 public class FragmentQuestion extends Fragment
 {
     private static final String TAG="JLPT_trainer:FragmentQuestion";
-    private QuestionDataViewModel q_dvm;
+    final private QuestionDataViewModel q_dvm;
 
     FragmentQuestionBinding binding;
 
-    Question q = new Question();
+    Question cur_question;
     TextView question_title;
     TextView question_content;
     TextView choice_title;
     RadioGroup choice_rd;
     RadioButton[] choice_rb = new RadioButton[4];
     String[] choices = new String[4];
-    int q_id;
+
+    int total_answered;
+    int correct_answered;
+    int wrong_answered;
 
     public FragmentQuestion(QuestionDataViewModel m)
     {
@@ -60,31 +64,67 @@ public class FragmentQuestion extends Fragment
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        cur_question = null;
+
+        stats_set_start();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        set_screen_without_question();
+        cur_question = randomGetQuestion();
     }
 
-    /*
-    private void setViewItems() {
-        question_title = (TextView)findViewById(R.id.question_title);
-        question_content = (TextView)findViewById(R.id.question_content);
-        choice_title = (TextView)findViewById(R.id.choice_title);
-        choice_rd = (RadioGroup)findViewById(R.id.choices);
-        choice_rb[0] = (RadioButton)findViewById(R.id.choice1);
-        choice_rb[1] = (RadioButton)findViewById(R.id.choice2);
-        choice_rb[2] = (RadioButton)findViewById(R.id.choice3);
-        choice_rb[3] = (RadioButton)findViewById(R.id.choice4);
-        button_answer = (Button)findViewById(R.id.button_answer);
-        button_next = (Button)findViewById(R.id.button_next);
-        button_setting = (Button)findViewById(R.id.button_setting);
+    public void check_answer() {
+        if (cur_question == null) {
+            Log.e(TAG, "cur_question is null");
+            return;
+        }
+
+        int answer = 0;
+        int id = choice_rd.getCheckedRadioButtonId();
+        if (id == R.id.choice1)
+            answer = 1;
+        else if (id == R.id.choice2)
+            answer = 2;
+        else if (id == R.id.choice3)
+            answer = 3;
+        else if (id == R.id.choice4)
+            answer = 4;
+
+        set_right_choice_button(cur_question.right_choice);
+        if (answer != cur_question.right_choice) {
+            set_wrong_choice_button(answer);
+            choice_title.setText(getString(R.string.choice_title) + " : " +
+                    getString(R.string.wrong));
+
+            stats_add_if_answered_correct(false);
+        } else {
+            choice_title.setText(getString(R.string.choice_title) + " : " +
+                    getString(R.string.correct));
+
+            stats_add_if_answered_correct(true);
+        }
     }
 
-     */
+    public void next_question() {
+        cur_question = randomGetQuestion();
+    }
+
+    public void finish_answer() {
+        stats_show();
+    }
+
+    private Question randomGetQuestion() {
+        Question q = q_dvm.randomGetQuestion();
+        if (q == null) {
+            Log.e(TAG, "strange no question");
+            set_screen_without_question();
+        } else {
+            set_question_to_view(q);
+        }
+        return q;
+    }
 
     private void setViewItemsBinding() {
         question_title = binding.questionTitle;
@@ -98,10 +138,12 @@ public class FragmentQuestion extends Fragment
     }
 
     private void set_question_to_view(Question q) {
+        Log.d(TAG, "set_question_to_view");
+
+        set_screen_with_question();
         question_title.setText(getString(R.string.each_question_title, q.id));
         question_content.setText(q.question);
         choice_title.setText(getString(R.string.choice_title));
-        choice_rd.clearCheck();
         choices[0] = q.choice1;
         choices[1] = q.choice2;
         choices[2] = q.choice3;
@@ -114,20 +156,24 @@ public class FragmentQuestion extends Fragment
         set_radio_button_color(choice_rb[1], R.color.gray);
         set_radio_button_color(choice_rb[2], R.color.gray);
         set_radio_button_color(choice_rb[3], R.color.gray);
-        set_screen_with_question();
+        choice_rb[0].setChecked(false);
+        choice_rb[1].setChecked(false);
+        choice_rb[2].setChecked(false);
+        choice_rb[3].setChecked(false);
+        choice_rd.clearCheck();
     }
 
-
-
     private void set_radio_button_color(RadioButton rb, int color) {
-        rb.setTextColor(ContextCompat.getColorStateList(getContext(), color));
+        Context mContext = getContext();
+        if (mContext != null)
+            rb.setTextColor(ContextCompat.getColorStateList(mContext, color));
     }
 
     private void set_right_choice_button(int which) {
         int id = which - 1;
         if (id < 0 || id > 3) return;
         set_radio_button_color(choice_rb[id], R.color.blue);
-        //choice[id].setChecked(true);
+        choice_rb[id].setChecked(true);
     }
 
     private void set_wrong_choice_button(int which) {
@@ -144,33 +190,46 @@ public class FragmentQuestion extends Fragment
 
     private void set_screen_with_question() {
         question_content.setVisibility(View.VISIBLE);
+        question_content.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         choice_title.setVisibility(View.VISIBLE);
         choice_rd.setVisibility(View.VISIBLE);
     }
 
-
-    /*
-    private void init_db() {
-        Question question = new Question();
-        question.set_to_q1();
-        q_rep.insert(question);
-        question = new Question();
-        question.set_to_q2();
-        q_rep.insert(question);
-        question = new Question();
-        question.set_to_q3();
-        q_rep.insert(question);
-        question = new Question();
-        question.set_to_q4();
-        q_rep.insert(question);
-        question = new Question();
-        question.set_to_q5();
-        q_rep.insert(question);
-        question = new Question();
-        question.set_to_q6();
-        q_rep.insert(question);
+    private void stats_set_start() {
+        total_answered = 0;
+        correct_answered = 0;
+        wrong_answered = 0;
     }
 
-     */
+    private void stats_add_if_answered_correct(boolean isCorrect) {
+        total_answered++;
+        if (isCorrect)
+            correct_answered++;
+        else
+            wrong_answered++;
+    }
+
+    private void stats_show() {
+        question_title.setVisibility(View.VISIBLE);
+        question_content.setVisibility(View.VISIBLE);
+        question_content.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        choice_title.setVisibility(View.VISIBLE);
+        choice_rd.setVisibility(View.INVISIBLE);
+
+        Log.v(TAG, "Total answered =" + Integer.toString(total_answered));
+        Log.v(TAG, "Correct answers =" + Integer.toString(correct_answered));
+        Log.v(TAG, "Wrong answers =" + Integer.toString(wrong_answered));
+
+        int rate = 0;
+        if (total_answered != 0)
+            rate = correct_answered * 100 / total_answered;
+        Log.v(TAG, "correct rate: " + Integer.toString(rate) +"%");
+
+        question_title.setText(getString(R.string.stats_total_str, total_answered));
+        question_content.setText(getString(R.string.stats_each_str,
+                correct_answered, wrong_answered));
+        choice_title.setText(getString(R.string.stats_rate_str, rate));
+    }
+
 }
 

@@ -13,11 +13,12 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -31,6 +32,8 @@ public class QuestionDataViewModel {
     private QuestionRepository q_rep;
     int total_questions = 0;
     List<Question> questions;
+
+    Random random = new Random();
 
     interface onDataReadyCallback {
         void onDataReady(List<Question> questions);
@@ -58,22 +61,43 @@ public class QuestionDataViewModel {
             public void onDataReady(List<Question> lq) {
                 questions = lq;
                 total_questions = questions.size();
-                Log.v(TAG, "total_questions :" + Integer.toString(total_questions));
+                Log.d(TAG, "total_questions :" + Integer.toString(total_questions));
                 isLoading.set(false);
                 isDBloaded.set(true);
             }
         });
     }
 
-    void issueGetAllQuestions(final onDataReadyCallback callback) {
+    public void issueGetAllQuestions(final onDataReadyCallback callback) {
         isLoading.set(true);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(()-> {
-            Log.v(TAG, "issueGetAllQuestions()");
+            Log.d(TAG, "issueGetAllQuestions()");
             List<Question> lq = q_rep.getAllQuestions();
             callback.onDataReady(lq);
         });
         executor.shutdown();
+    }
+
+    public Question randomGetQuestion() {
+        Question q;
+
+        if (!isDBloaded.get()) {
+            Log.e(TAG, "DB is not loaded yet");
+            return null;
+        }
+        if (total_questions <= 0) {
+            Log.e(TAG, "No question in DB");
+            return null;
+        }
+        if (total_questions != questions.size()) {
+            Log.e(TAG, "Strange total_questions " + Integer.toString(total_questions) + "!="
+                    + "questions Array List size: " + Integer.toString(questions.size()));
+            return null;
+        }
+
+        int random_id = random.nextInt(total_questions);
+        return questions.get(random_id);
     }
 
     private void import_from_txt_file_thread() {

@@ -21,4 +21,9 @@
     <string name="setting_status_in_progress">處理中</string>
     <string name="setting_status_completed">完成</string>
 
+    //Question stats
+    <string name="stats_total_str">共回答 %1$d 題</string>
+    <string name="stats_each_str">正確: %1$d 題, 錯誤: %2$d 題</string>
+    <string name="stats_rate_str">正確率: %1$d %%</string>
+
 </resources>
