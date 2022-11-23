@@ -39,9 +39,9 @@ public class QuestionKeywordRepository {
     }
 
     private void addByIdMinMax(int id, String keyword, int minPos, int maxPos) {
-        Log.d(TAG, "addByIdMinMax: " + "id=" + Integer.toString(id)
-                    + ", minPos=" + Integer.toString(minPos)
-                    + " maxPos=" + Integer.toString(maxPos) );
+        //Log.d(TAG, "addByIdMinMax: " + "id=" + Integer.toString(id)
+        //            + ", minPos=" + Integer.toString(minPos)
+        //            + " maxPos=" + Integer.toString(maxPos) );
 
         int middle = (minPos + maxPos) / 2;
 

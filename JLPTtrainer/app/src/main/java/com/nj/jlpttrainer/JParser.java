@@ -15,8 +15,11 @@ public class JParser {
     protected InputStreamReader is_reader = null;
     protected BufferedReader br = null;
 
+    boolean isCommented;
+
     public JParser(InputStream is) {
         this.is = is;
+        isCommented = false;
         try {
             is_reader = new InputStreamReader(is, StandardCharsets.UTF_8);
             br = new BufferedReader(is_reader);
@@ -35,6 +38,16 @@ public class JParser {
                 if (line.isEmpty()) continue;
                 if (line.isBlank()) continue;
                 if (line.startsWith("//")) continue;
+                if (line.startsWith("/*")) {
+                    isCommented = true;
+                    continue;
+                }
+                if (line.startsWith("*/")) {
+                    isCommented = false;
+                    continue;
+                }
+                if (isCommented)
+                    continue;
                 break;
             }
         } catch (Exception e) {
