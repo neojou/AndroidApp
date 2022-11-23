@@ -38,6 +38,8 @@ public class QuestionRepository {
     }
 
     public void update_direct(Question q) {
+        //Log.d(TAG, "update_direct");
+        //q.log_dump();
         questionDao.update(q);
     }
 

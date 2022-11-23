@@ -28,9 +28,11 @@ public class QuestionParser extends JParser {
 
         try {
             while ((line1 = readLine()) != null) {
+                //Log.d(TAG, "FindOutTheFirstLine: " + line1);
                 m1 = p1.matcher(line1);
-                if (m1.matches())
+                if (m1.matches()) {
                     return m1;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,8 +55,9 @@ public class QuestionParser extends JParser {
                 if (str != null)
                     q.question = str.trim();
             }
+            //Log.d(TAG, "id=" + Integer.toString(q.id));
 
-            final String line2 = br.readLine();
+            final String line2 = readLine();
             if (line2 == null) return null;
             final Pattern p2 = Pattern.compile("1\\S(.+) 2\\S(.+) 3\\S(.+) 4\\S(.+)(.*)");
             Matcher m2 = p2.matcher(line2);
@@ -78,7 +81,7 @@ public class QuestionParser extends JParser {
                 return null;
             }
 
-            final String line3 = br.readLine();
+            final String line3 = readLine();
             if (line3 == null) return null;
             final Pattern p3 = Pattern.compile("答案:(\\d+)(.*)");
             Matcher m3 = p3.matcher(line3);

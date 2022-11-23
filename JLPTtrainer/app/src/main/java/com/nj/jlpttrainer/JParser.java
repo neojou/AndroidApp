@@ -30,9 +30,12 @@ public class JParser {
 
         try {
             while ((line = br.readLine()) != null) {
-                Log.v(TAG, "line="+line);
+                //Log.v(TAG, "line="+line);
                 line = line.trim();
-                if (line != "") break;
+                if (line.isEmpty()) continue;
+                if (line.isBlank()) continue;
+                if (line.startsWith("//")) continue;
+                break;
             }
         } catch (Exception e) {
             e.printStackTrace();
