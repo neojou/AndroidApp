@@ -112,9 +112,11 @@ public class QuestionRepository {
         executor.shutdown();
     }
 
-    public List<Question> getQuestionById(int id) {
+    public Question getQuestionById(int id) {
         results = questionDao.selectById(id);
-        return results;
+        if (results == null) return null;
+        if (results.size() <= 0) return null;
+        return results.get(0);
     }
 
     public List<Question> getQuestionByQuestion(String qstr) {

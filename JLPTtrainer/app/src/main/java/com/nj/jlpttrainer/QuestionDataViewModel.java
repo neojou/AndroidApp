@@ -1,26 +1,18 @@
 package com.nj.jlpttrainer;
 
 import android.app.Application;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableField;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Random;
-
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Set;
 
 public class QuestionDataViewModel {
     private static final String TAG="JLPT_trainer:QuestionDataViewModel";
@@ -30,8 +22,10 @@ public class QuestionDataViewModel {
 
     Application app;
     private QuestionRepository q_rep;
+    private QuestionKeywordRepository qk_rep;
+    private QuestionToAnswer qta;
     int total_questions = 0;
-    List<Question> questions;
+    QuestionHashMap questions;
 
     Random random = new Random();
 
@@ -42,6 +36,8 @@ public class QuestionDataViewModel {
     public QuestionDataViewModel(Application application) {
         app = application;
         q_rep = new QuestionRepository(app);;
+        qk_rep = null;
+        qta = null;
     }
 
     public void importFromTxtFile(final onDataReadyCallback callback)  {
@@ -55,13 +51,36 @@ public class QuestionDataViewModel {
         executor.shutdown();
     }
 
+    private void load_keywords() {
+        qk_rep = new QuestionKeywordRepository(total_questions);
+
+        /* keywords.txt */
+        InputStream is = app.getResources().openRawResource(R.raw.keywords);
+        KeywordIndexParser kp = new KeywordIndexParser(is);
+        KeywordIndex ki;
+        while ((ki = kp.getKeywordIndex()) != null) {
+            ki.log_dump();
+            qk_rep.addByKeywordIndex(ki);
+        }
+        kp.close();
+        qk_rep.log_dump();
+
+        qta = new QuestionToAnswer();
+        qta.insertAll(qk_rep.getAllIDs());
+    }
+
     public void load_db() {
+        isDBloaded.set(false);
         issueGetAllQuestions(new QuestionDataViewModel.onDataReadyCallback() {
             @Override
             public void onDataReady(List<Question> lq) {
-                questions = lq;
+                questions = new QuestionHashMap();
+                questions.insertAll(lq);
                 total_questions = questions.size();
                 Log.d(TAG, "total_questions :" + Integer.toString(total_questions));
+
+                load_keywords();
+
                 isLoading.set(false);
                 isDBloaded.set(true);
             }
@@ -77,6 +96,19 @@ public class QuestionDataViewModel {
             callback.onDataReady(lq);
         });
         executor.shutdown();
+    }
+
+    public void removeFromQuestionToAnswer(int id) {
+        qta.remove(id);
+    }
+    private Question getRandomQuestionToAnswer() {
+        int size = qta.size();
+        if (size <= 0)
+            return null;
+
+        int idx = random.nextInt(size);
+        int id = qta.get(idx);
+        return questions.findById(id);
     }
 
     public Question randomGetQuestion() {
@@ -96,13 +128,20 @@ public class QuestionDataViewModel {
             return null;
         }
 
+        q = getRandomQuestionToAnswer();
+        if (q != null)
+            return q;
+
         int random_id = random.nextInt(total_questions);
-        return questions.get(random_id);
+        q = questions.findById(random_id);
+
+        return q;
     }
 
     private void import_from_txt_file_thread() {
         InputStream is;
 
+        /* questions.txt */
         is = app.getResources().openRawResource(R.raw.questions);
         QuestionParser qp = new QuestionParser(is);
         ArrayList<Question> ql = new ArrayList<Question>();
@@ -112,6 +151,7 @@ public class QuestionDataViewModel {
                 ql.add(q);
         };
         qp.close();
+
         q_rep.updateAll_direct(ql);
     }
 

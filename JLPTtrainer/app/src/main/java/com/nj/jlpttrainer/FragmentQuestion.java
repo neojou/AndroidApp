@@ -104,6 +104,8 @@ public class FragmentQuestion extends Fragment
                     getString(R.string.correct));
 
             stats_add_if_answered_correct(true);
+
+            q_dvm.removeFromQuestionToAnswer(cur_question.id);
         }
     }
 

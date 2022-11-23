@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class QuestionParser {
+public class QuestionParser extends JParser {
     private static final String TAG="JLPT_trainer:QuestionParser";
 
     InputStream is;
@@ -18,23 +18,16 @@ public class QuestionParser {
 
 
     public QuestionParser(InputStream is) {
-        this.is = is;
-        try {
-            is_reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-            br = new BufferedReader(is_reader);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        super(is);
     }
 
-    private Matcher findOutTheFirstLine() {
+    protected Matcher findOutTheFirstLine() {
         final Pattern p1 = Pattern.compile("(^\\d+) (.*)");
         Matcher m1;
         String line1;
 
         try {
-            while ((line1 = br.readLine()) != null) {
-                Log.v(TAG, "line="+line1);
+            while ((line1 = readLine()) != null) {
                 m1 = p1.matcher(line1);
                 if (m1.matches())
                     return m1;
@@ -42,7 +35,7 @@ public class QuestionParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-            return null;
+        return null;
     }
 
     public Question getQuestion() {
@@ -108,16 +101,4 @@ public class QuestionParser {
         return q;
     }
 
-    public void close() {
-        try {
-            if (br != null)
-                br.close();
-            if (is_reader != null)
-                is_reader.close();
-            if (is != null)
-                is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
