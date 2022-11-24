@@ -67,7 +67,6 @@ public class FragmentSetting extends Fragment
         data_rdy_callback = new QuestionDataViewModel.onDataReadyCallback() {
             @Override
             public void onDataReady(List<Question> lq) {
-                Log.v(TAG, "onDataReady with List");
                 setting_status.setText(getString(R.string.setting_status_completed));
             }
         };
@@ -91,10 +90,8 @@ public class FragmentSetting extends Fragment
     }
 
     private void questions_import() {
-        Log.v(TAG, "question_import()");
-
         setting_status.setText(getString(R.string.setting_status_in_progress));
         q_dvm.importFromTxtFile(data_rdy_callback);
-        Log.v(TAG, "question_import() issued");
+        Log.d(TAG, "question_import() issued");
     }
 }

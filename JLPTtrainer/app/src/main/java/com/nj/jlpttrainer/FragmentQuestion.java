@@ -98,14 +98,15 @@ public class FragmentQuestion extends Fragment
             choice_title.setText(getString(R.string.choice_title) + " : " +
                     getString(R.string.wrong));
 
+            q_dvm.addIntoWrongBook(cur_question);
             stats_add_if_answered_correct(false);
         } else {
             choice_title.setText(getString(R.string.choice_title) + " : " +
                     getString(R.string.correct));
 
-            stats_add_if_answered_correct(true);
-
+            q_dvm.removeFromWrongBook(cur_question);
             q_dvm.removeFromQuestionToAnswer(cur_question.id);
+            stats_add_if_answered_correct(true);
         }
     }
 
@@ -140,8 +141,7 @@ public class FragmentQuestion extends Fragment
     }
 
     private void set_question_to_view(Question q) {
-        Log.d(TAG, "set_question_to_view");
-
+        //Log.d(TAG, "set_question_to_view");
         set_screen_with_question();
         question_title.setText(getString(R.string.each_question_title, q.id));
         question_content.setText(q.question);
@@ -218,14 +218,14 @@ public class FragmentQuestion extends Fragment
         choice_title.setVisibility(View.VISIBLE);
         choice_rd.setVisibility(View.INVISIBLE);
 
-        Log.v(TAG, "Total answered =" + Integer.toString(total_answered));
-        Log.v(TAG, "Correct answers =" + Integer.toString(correct_answered));
-        Log.v(TAG, "Wrong answers =" + Integer.toString(wrong_answered));
+        //Log.d(TAG, "Total answered =" + Integer.toString(total_answered));
+        //Log.d(TAG, "Correct answers =" + Integer.toString(correct_answered));
+        //Log.d(TAG, "Wrong answers =" + Integer.toString(wrong_answered));
 
         int rate = 0;
         if (total_answered != 0)
             rate = correct_answered * 100 / total_answered;
-        Log.v(TAG, "correct rate: " + Integer.toString(rate) +"%");
+        //Log.d(TAG, "correct rate: " + Integer.toString(rate) +"%");
 
         question_title.setText(getString(R.string.stats_total_str, total_answered));
         question_content.setText(getString(R.string.stats_each_str,

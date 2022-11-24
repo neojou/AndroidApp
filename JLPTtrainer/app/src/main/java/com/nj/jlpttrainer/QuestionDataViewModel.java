@@ -16,6 +16,7 @@ import java.util.Set;
 
 public class QuestionDataViewModel {
     private static final String TAG="JLPT_trainer:QuestionDataViewModel";
+    Random random = new Random();
 
     public final ObservableBoolean isLoading = new ObservableBoolean(false);
     public final ObservableBoolean isDBloaded = new ObservableBoolean(false);
@@ -26,8 +27,8 @@ public class QuestionDataViewModel {
     private QuestionToAnswer qta;
     int total_questions = 0;
     QuestionHashMap questions;
+    WrongAnswerBook wab = new WrongAnswerBook();
 
-    Random random = new Random();
 
     interface onDataReadyCallback {
         void onDataReady(List<Question> questions);
@@ -59,11 +60,11 @@ public class QuestionDataViewModel {
         KeywordIndexParser kp = new KeywordIndexParser(is);
         KeywordIndex ki;
         while ((ki = kp.getKeywordIndex()) != null) {
-            ki.log_dump();
+            //ki.log_dump();
             qk_rep.addByKeywordIndex(ki);
         }
         kp.close();
-        qk_rep.log_dump();
+        //qk_rep.log_dump();
 
         qta = new QuestionToAnswer();
         qta.insertAll(qk_rep.getAllIDs());
@@ -128,6 +129,12 @@ public class QuestionDataViewModel {
             return null;
         }
 
+        if (wab.countdown()) {
+            q = wab.getWrongAnswer();
+            if (q != null)
+                return q;
+        }
+
         q = getRandomQuestionToAnswer();
         if (q != null)
             return q;
@@ -136,6 +143,14 @@ public class QuestionDataViewModel {
         q = questions.findById(random_id);
 
         return q;
+    }
+
+    public void addIntoWrongBook(Question q) {
+        wab.addWrongAnswer(q);
+    }
+
+    public void removeFromWrongBook(Question q) {
+        wab.removeWrongAnswerById(q.id);
     }
 
     private void import_from_txt_file_thread() {
@@ -147,7 +162,7 @@ public class QuestionDataViewModel {
         ArrayList<Question> ql = new ArrayList<Question>();
         Question q;
         while ((q = qp.getQuestion()) != null) {
-                q.log_dump();
+                //q.log_dump();
                 ql.add(q);
         };
         qp.close();

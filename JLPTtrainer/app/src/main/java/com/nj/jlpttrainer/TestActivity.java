@@ -2,10 +2,12 @@ package com.nj.jlpttrainer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,6 +29,7 @@ public class TestActivity extends AppCompatActivity
     FragmentImage frag_image;
     FragmentSetting frag_setting;
 
+    ConstraintLayout window_layout;
     Button button_load_db;
     Button button_start;
     Button button_answer;
@@ -52,6 +55,14 @@ public class TestActivity extends AppCompatActivity
             fragment_manager = getSupportFragmentManager();
             switch_to_main_image();
 
+            /* adjust the width of the window */
+            //DisplayMetrics dm = new DisplayMetrics();
+            //getWindowManager().getDefaultDisplay().getMetrics(dm);
+            //int vWidth = dm.widthPixels;
+            //int vHeight = dm.heightPixels;
+
+            //window_layout.getLayoutParams().width = (int)(vWidth * 0.95);
+
             isDBloaded = false;
             isStarted = false;
             isFinished = false;
@@ -65,6 +76,8 @@ public class TestActivity extends AppCompatActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         q_dvm = new QuestionDataViewModel(getApplication());
         binding.setQDvm(q_dvm);
+
+        window_layout = binding.windowLayout;
         button_load_db = binding.buttonLoadDb;
         button_start = binding.buttonStart;
         button_answer = binding.buttonAnswer;
@@ -108,12 +121,12 @@ public class TestActivity extends AppCompatActivity
     }
 
     private void to_load_db() {
-        Log.d(TAG, "to_load_db");
+        //Log.d(TAG, "to_load_db");
         q_dvm.load_db();
     }
 
     private void to_question_frag() {
-        Log.d(TAG, "to_question_frag");
+        //Log.d(TAG, "to_question_frag");
 
         switch_to_question();
 
@@ -123,7 +136,7 @@ public class TestActivity extends AppCompatActivity
     }
 
     private void to_question_finished() {
-        Log.d(TAG, "to_question_finished");
+        //Log.d(TAG, "to_question_finished");
 
         frag_question.finish_answer();
 
@@ -132,7 +145,7 @@ public class TestActivity extends AppCompatActivity
     }
 
     private void to_check_answer() {
-        Log.d(TAG, "check_answer");
+        //Log.d(TAG, "check_answer");
 
         frag_question.check_answer();
 
@@ -142,7 +155,7 @@ public class TestActivity extends AppCompatActivity
 
 
     private void to_next_question() {
-        Log.v(TAG, "next_question");
+        //Log.v(TAG, "next_question");
 
         frag_question.next_question();
 
@@ -151,14 +164,12 @@ public class TestActivity extends AppCompatActivity
     }
 
     private void to_setting() {
-        Log.v(TAG, "setting");
-
+        //Log.v(TAG, "setting");
         switch_to_setting();
     }
 
     private void return_to_main() {
-        Log.v(TAG, "return to main");
-
+        //Log.v(TAG, "return to main");
         isAnswered = false;
         switch_to_main_image();
     }
