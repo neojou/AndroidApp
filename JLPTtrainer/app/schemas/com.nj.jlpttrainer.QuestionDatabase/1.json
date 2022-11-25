@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4bb53cf9130d2ced5dbefe52a6ed0936",
+    "identityHash": "a2a4d2edc20b567479047db21c6e7f1e",
     "entities": [
       {
         "tableName": "JLPTquestions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `question` TEXT, `choice1` TEXT, `choice2` TEXT, `choice3` TEXT, `choice4` TEXT, `right_choice` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `question` TEXT, `choice1` TEXT, `choice2` TEXT, `choice3` TEXT, `choice4` TEXT, `right_choice` INTEGER NOT NULL, `answered_times` INTEGER NOT NULL, `wrong_times` INTEGER NOT NULL, `right_times` INTEGER NOT NULL, `correct_rate` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -49,6 +49,30 @@
             "columnName": "right_choice",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "answered_times",
+            "columnName": "answered_times",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wrong_times",
+            "columnName": "wrong_times",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "right_times",
+            "columnName": "right_times",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "correct_rate",
+            "columnName": "correct_rate",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -64,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4bb53cf9130d2ced5dbefe52a6ed0936')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a2a4d2edc20b567479047db21c6e7f1e')"
     ]
   }
 }

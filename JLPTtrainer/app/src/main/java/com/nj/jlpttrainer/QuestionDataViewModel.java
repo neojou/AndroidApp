@@ -65,9 +65,6 @@ public class QuestionDataViewModel {
         }
         kp.close();
         //qk_rep.log_dump();
-
-        qta = new QuestionToAnswer();
-        qta.insertAll(qk_rep.getAllIDs());
     }
 
     public void load_db() {
@@ -88,6 +85,12 @@ public class QuestionDataViewModel {
         });
     }
 
+    public void start_to_answer() {
+        Log.d(TAG, "start_to_answer");
+        qta = new QuestionToAnswer(questions);
+        qta.insertAll(qk_rep.getAllIDs());
+    }
+
     public void issueGetAllQuestions(final onDataReadyCallback callback) {
         isLoading.set(true);
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -102,15 +105,7 @@ public class QuestionDataViewModel {
     public void removeFromQuestionToAnswer(int id) {
         qta.remove(id);
     }
-    private Question getRandomQuestionToAnswer() {
-        int size = qta.size();
-        if (size <= 0)
-            return null;
 
-        int idx = random.nextInt(size);
-        int id = qta.get(idx);
-        return questions.findById(id);
-    }
 
     public Question randomGetQuestion() {
         Question q;
@@ -129,14 +124,10 @@ public class QuestionDataViewModel {
             return null;
         }
 
-        if (wab.countdown()) {
-            q = wab.getWrongAnswer();
-            if (q != null)
-                return q;
-        }
+        if ((q = wab.getWrongAnswer()) != null)
+            return q;
 
-        q = getRandomQuestionToAnswer();
-        if (q != null)
+        if ((q = qta.getQuestion()) != null)
             return q;
 
         int random_id = random.nextInt(total_questions);
@@ -145,12 +136,30 @@ public class QuestionDataViewModel {
         return q;
     }
 
-    public void addIntoWrongBook(Question q) {
+    private void addIntoWrongBook(Question q) {
         wab.addWrongAnswer(q);
     }
 
-    public void removeFromWrongBook(Question q) {
+    private void removeFromWrongBook(Question q) {
         wab.removeWrongAnswerById(q.id);
+    }
+
+    public void answered_correctly(Question q) {
+        removeFromQuestionToAnswer(q.id);
+        removeFromWrongBook(q);
+        q.answered_times++;
+        q.right_times++;
+        q.correct_rate = (q.right_times * 100) / q.answered_times;
+        q_rep.update(q);
+    }
+
+    public void answered_wrongly(Question q) {
+        removeFromQuestionToAnswer(q.id);
+        addIntoWrongBook(q);
+        q.answered_times++;
+        q.wrong_times++;
+        q.correct_rate = (q.right_times * 100) / q.answered_times;
+        q_rep.update(q);
     }
 
     private void import_from_txt_file_thread() {

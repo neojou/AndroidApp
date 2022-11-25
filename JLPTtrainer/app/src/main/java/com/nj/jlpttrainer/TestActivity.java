@@ -218,6 +218,8 @@ public class TestActivity extends AppCompatActivity
         frag_question = new FragmentQuestion(q_dvm);
         ft.add(R.id.fragment_main, frag_question);
         ft.commit();
+
+        frag_question.start_to_answer();
     }
 
     private void ft_switch_to_main() {

@@ -10,7 +10,7 @@ import java.util.Set;
 public class WrongAnswerBook {
     private static final String TAG="JLPT_trainer:WrongAnswerBook";
 
-    final static int TimeToCountDown = 7;
+    final static int TimeToCountDown = 3;
 
     HashMap<Integer, Question> wrongs = new HashMap<Integer, Question>();
     int timers = TimeToCountDown;
@@ -26,10 +26,9 @@ public class WrongAnswerBook {
     }
 
     public Question getWrongAnswer() {
-        if (wrongs.isEmpty()) {
-            //Log.d(TAG, "isEmpty");
+        if (!countdown())
             return null;
-        }
+
         Set keySet = wrongs.keySet();
         if (keySet.isEmpty()) {
             Log.e(TAG, "strange HashMap is not empty but key set is empty");
@@ -46,7 +45,7 @@ public class WrongAnswerBook {
         return q;
     }
 
-    public boolean countdown() {
+    private boolean countdown() {
         if (wrongs.isEmpty()) {
             return false;
         }

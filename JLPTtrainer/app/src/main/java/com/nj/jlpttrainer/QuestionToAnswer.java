@@ -1,39 +1,59 @@
 package com.nj.jlpttrainer;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public class QuestionToAnswer {
-    public Set<Integer> qids = new LinkedHashSet<Integer>();
+    private static final String TAG="JLPT_trainer:QuestionToAnswer";
 
-    public void insertAll(List<Integer> ids) {
-        for (Integer id : ids)
-            qids.add(id);
+    QuestionHashMap qm;
+    LinkedHashSet<Integer> ids;
+    ArrayList<Question> questions;
+
+
+    public QuestionToAnswer(QuestionHashMap m) {
+        qm = m;
+        ids = new LinkedHashSet<Integer>();
     }
 
-    public boolean contains(int id) {
-        return qids.contains(id);
+    public void insertAll(List<Integer> data) {
+        //Log.d(TAG, "insertALL");
+        questions = new ArrayList<Question>();
+        for (Integer id : data) {
+            Question q = qm.findById(id);
+            if (q == null) continue;
+            if (!ids.contains(id)) {
+                ids.add(id);
+                questions.add(q);
+            }
+        }
+
+        Question.sortByCorrectRate(questions);
+        //Question.log_dump(questions);
     }
 
-    public boolean remove(int id) {
-        return qids.remove(id);
+    public void remove(int id) {
+        if (ids.contains(id)) {
+            ids.remove(id);
+            Question q = qm.findById(id);
+            if (q != null)
+                questions.remove(q);
+        }
     }
 
-    public int size() {
-        return qids.size();
-    }
+    public Question getQuestion() {
+        Iterator<Question> qitr;
 
-    public int get(int idx) {
-        int size = qids.size();
-        if (size <= 0) return 0;
-        if (idx >= size) return 0;
-
-        //Creating an empty integer array
-        Integer[] array = new Integer[size];
-        //Converting Set object to integer array
-        qids.toArray(array);
-        return array[idx];
+        qitr = questions.iterator();
+        if (qitr.hasNext())
+            return qitr.next();
+        return null;
     }
 }

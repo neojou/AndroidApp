@@ -75,6 +75,10 @@ public class FragmentQuestion extends Fragment
         cur_question = randomGetQuestion();
     }
 
+    public void start_to_answer() {
+        q_dvm.start_to_answer();
+    }
+
     public void check_answer() {
         if (cur_question == null) {
             Log.e(TAG, "cur_question is null");
@@ -94,18 +98,17 @@ public class FragmentQuestion extends Fragment
 
         set_right_choice_button(cur_question.right_choice);
         if (answer != cur_question.right_choice) {
-            set_wrong_choice_button(answer);
+            q_dvm.answered_wrongly(cur_question);
+
             choice_title.setText(getString(R.string.choice_title) + " : " +
                     getString(R.string.wrong));
-
-            q_dvm.addIntoWrongBook(cur_question);
+            set_wrong_choice_button(answer);
             stats_add_if_answered_correct(false);
         } else {
+            q_dvm.answered_correctly(cur_question);
+
             choice_title.setText(getString(R.string.choice_title) + " : " +
                     getString(R.string.correct));
-
-            q_dvm.removeFromWrongBook(cur_question);
-            q_dvm.removeFromQuestionToAnswer(cur_question.id);
             stats_add_if_answered_correct(true);
         }
     }
@@ -142,6 +145,11 @@ public class FragmentQuestion extends Fragment
 
     private void set_question_to_view(Question q) {
         //Log.d(TAG, "set_question_to_view");
+        //Log.d(TAG, "Question answered times:" + q.answered_times);
+        int rate = 0;
+        if (q.answered_times != 0)
+            rate = (q.answered_times - q.wrong_times) * 100 / q.answered_times;
+        //Log.d(TAG, "Question correct rate:" + rate + "%");
         set_screen_with_question();
         question_title.setText(getString(R.string.each_question_title, q.id));
         question_content.setText(q.question);

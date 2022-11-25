@@ -8,6 +8,9 @@ import androidx.room.PrimaryKey;
 import android.content.ContentValues;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -39,6 +42,18 @@ public class Question {
     /** The right answer number */
     public static final String COLUMN_RIGHT_CHOICE = "right_choice";
 
+    /** The answered times */
+    public static final String COLUMN_ANSWERED_TIMES = "answered_times";
+
+    /** The wrong times */
+    public static final String COLUMN_WRONG_TIMES = "wrong_times";
+
+    /** The correct times */
+    public static final String COLUMN_RIGHT_TIMES = "right_times";
+
+    /** The correct rates */
+    public static final String COLUMN_CORRECT_RATE = "correct_rate";
+
     /** The unique ID of the Question */
     @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
@@ -68,7 +83,41 @@ public class Question {
     @ColumnInfo(name = COLUMN_RIGHT_CHOICE)
     int right_choice;
 
+    /** The answered times */
+    @ColumnInfo(name = COLUMN_ANSWERED_TIMES)
+    int answered_times;
+
+    /** The wrong times */
+    @ColumnInfo(name = COLUMN_WRONG_TIMES)
+    int wrong_times;
+
+    /** The correct times */
+    @ColumnInfo(name = COLUMN_RIGHT_TIMES)
+    int right_times;
+
+    /** The correct rate */
+    @ColumnInfo(name = COLUMN_CORRECT_RATE)
+    int correct_rate;
+
+    /** To sort the questions by correct rate */
+    public static class QuestionComparator implements Comparator<Question> {
+
+        // override the compare() method
+        public int compare(Question q1, Question q2) {
+            if (q1.correct_rate == q2.correct_rate) {
+                return 0;
+            } else if (q1.correct_rate < q2.correct_rate) {
+                return -1;
+            }
+            return 1;
+        }
+    }
+
     public Question() {
+        answered_times = 0;
+        wrong_times = 0;
+        right_times = 0;
+        correct_rate = 0;
     }
 
     public void copy(Question qc) {
@@ -79,6 +128,8 @@ public class Question {
         this.choice3 = qc.choice3;
         this.choice4 = qc.choice4;
         this.right_choice = qc.right_choice;
+        this.answered_times = qc.answered_times;
+        this.wrong_times = qc.wrong_times;
     }
 
     public static Question fromContentValues(@Nullable ContentValues values) {
@@ -107,13 +158,23 @@ public class Question {
         if (values.containsKey(COLUMN_RIGHT_CHOICE)) {
             question.id = values.getAsInteger(COLUMN_RIGHT_CHOICE);
         }
+        if (values.containsKey(COLUMN_ANSWERED_TIMES)) {
+            question.id = values.getAsInteger(COLUMN_ANSWERED_TIMES);
+        }
+        if (values.containsKey(COLUMN_WRONG_TIMES)) {
+            question.id = values.getAsInteger(COLUMN_WRONG_TIMES);
+        }
         return question;
     }
 
     public void log_dump() {
-        Log.d(TAG, Integer.toString(id) + " : " + question);
+        Log.d(TAG, id + " : " + question);
         Log.d(TAG, "[1]" + choice1 + " [2]" + choice2 + " [3]" + choice3 + " [4]" + choice4);
         Log.d(TAG, "right answer: " + right_choice);
+        Log.d(TAG, "answered times: " + answered_times);
+        Log.d(TAG, "wrong times: " + wrong_times);
+        Log.d(TAG, "right times: " + right_times);
+        Log.d(TAG, "correct rate: " + correct_rate);
     }
 
     public static void log_dump(List<Question> qlist) {
@@ -121,11 +182,28 @@ public class Question {
 
         if (qlist == null) return;
         sz = qlist.size();
-        Log.d(TAG, "Question List size =" + Integer.toString(sz));
+        Log.d(TAG, "Question List size =" + sz);
         for (int i = 0; i < sz; i++) {
             Question q = qlist.get(i);
             q.log_dump();
         }
+    }
+
+    public static void sortByCorrectRate(List<Question> ql) {
+        Collections.sort(ql, new Question.QuestionComparator());
+        int lastZeroCorrectPos = 0;
+        for (int i = 0; i < ql.size(); i++) {
+            Question q = ql.get(i);
+            if (q == null) continue;
+            if (q.correct_rate != 0) {
+                break;
+            }
+            lastZeroCorrectPos = i;
+        }
+
+        Log.d(TAG, "lastZeroCorrectPos=" + lastZeroCorrectPos);
+        if (lastZeroCorrectPos > 0)
+            Collections.shuffle(ql.subList(0, lastZeroCorrectPos));
     }
 };
 
