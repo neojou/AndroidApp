@@ -145,13 +145,11 @@ public class FragmentQuestion extends Fragment
 
     private void set_question_to_view(Question q) {
         //Log.d(TAG, "set_question_to_view");
-        //Log.d(TAG, "Question answered times:" + q.answered_times);
-        int rate = 0;
-        if (q.answered_times != 0)
-            rate = (q.answered_times - q.wrong_times) * 100 / q.answered_times;
-        //Log.d(TAG, "Question correct rate:" + rate + "%");
+        Log.d(TAG, "question id:" + q.id);
+        Log.d(TAG, "Question answered times:" + q.answered_times);
+        Log.d(TAG, "Question correct rate:" + q.correct_rate + "%");
         set_screen_with_question();
-        question_title.setText(getString(R.string.each_question_title, q.id));
+        question_title.setText(getString(R.string.each_question_title, q.id, q.correct_rate));
         question_content.setText(q.question);
         choice_title.setText(getString(R.string.choice_title));
         choices[0] = q.choice1;

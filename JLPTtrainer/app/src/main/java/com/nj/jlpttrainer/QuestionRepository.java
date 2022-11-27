@@ -99,11 +99,13 @@ public class QuestionRepository {
         if (insertList.size() != 0)
             insertAll_direct(insertList.toArray(new Question[0]));
 
+        /*
         qiter = updateList.listIterator();
         while (qiter.hasNext()) {
             Question q = qiter.next();
             update_direct(q);
         }
+         */
     }
 
     public void deleteQuestionById(int id) {
