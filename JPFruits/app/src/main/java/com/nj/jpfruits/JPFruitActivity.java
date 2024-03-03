@@ -41,6 +41,7 @@ public class JPFruitActivity extends AppCompatActivity {
 
         FragmentTransaction ft;
         ft = fragment_manager.beginTransaction();
+        ft.setReorderingAllowed(true);
         ft.replace(R.id.fragment_activity_main, frag_image);
         ft.commit();
     }

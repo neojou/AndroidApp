@@ -24,7 +24,6 @@ public class FragmentImage extends Fragment {
             Bundle savedInstanceState
     ) {
         View view = inflater.inflate(R.layout.fragment_image, container, false);
-        Log.i(TAG, "inflate");
         return view;
     }
 
